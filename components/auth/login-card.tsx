@@ -1,0 +1,63 @@
+"use client";
+
+import { Mail, ShieldCheck } from "lucide-react";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { Card } from "@/components/ui/card";
+
+export function LoginCard() {
+  const supabase = createSupabaseBrowserClient();
+
+  async function handleOAuth(provider: "google" | "apple") {
+    if (!supabase) return;
+    await supabase.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+  }
+
+  async function handleEmailLogin(formData: FormData) {
+    if (!supabase) return;
+    const email = String(formData.get("email") ?? "");
+    if (!email) return;
+
+    await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+  }
+
+  return (
+    <Card className="stack">
+      <div className="section-heading">
+        <h2>Entrar</h2>
+        <p>Associamos cada sinalização ao utilizador autenticado para aumentar a confiança dos dados.</p>
+      </div>
+      <button className="primary-button" type="button" onClick={() => handleOAuth("google")}>
+        Entrar com Google
+      </button>
+      <button className="secondary-button" type="button" onClick={() => handleOAuth("apple")}>
+        Entrar com Apple
+      </button>
+      <form action={handleEmailLogin} className="stack">
+        <label className="field">
+          <span>E-mail</span>
+          <div className="input-with-icon">
+            <Mail size={16} />
+            <input name="email" placeholder="nome@exemplo.com" type="email" required />
+          </div>
+        </label>
+        <button className="secondary-button" type="submit">
+          Receber link mágico
+        </button>
+      </form>
+      <div className="info-strip">
+        <ShieldCheck size={16} />
+        <span>Apenas utilizadores próximos da bomba podem sinalizar ou criar novas bombas.</span>
+      </div>
+    </Card>
+  );
+}
