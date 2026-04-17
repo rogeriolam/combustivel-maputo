@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Station } from "@/lib/domain/types";
+import { Station, StationFilters } from "@/lib/domain/types";
 
 const LeafletMap = dynamic(() => import("@/components/map/leaflet-map-canvas"), {
   ssr: false,
@@ -12,10 +12,16 @@ const LeafletMap = dynamic(() => import("@/components/map/leaflet-map-canvas"), 
   )
 });
 
-export function MapView({ stations }: { stations: Station[] }) {
+export function MapView({
+  stations,
+  filters
+}: {
+  stations: Station[];
+  filters?: StationFilters;
+}) {
   return (
     <div className="map-frame">
-      <LeafletMap stations={stations} />
+      <LeafletMap stations={stations} selectedProvince={filters?.province} />
     </div>
   );
 }

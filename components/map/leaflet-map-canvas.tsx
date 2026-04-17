@@ -2,10 +2,10 @@
 
 import L from "leaflet";
 import Link from "next/link";
-import { useMemo, useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer, ZoomControl } from "react-leaflet";
-import { MAPUTO_CENTER, statusColors, statusLabels } from "@/lib/domain/config";
-import { Station } from "@/lib/domain/types";
+import { useEffect, useMemo, useState } from "react";
+import { MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap } from "react-leaflet";
+import { MAPUTO_CENTER, provinceMapView, statusColors, statusLabels } from "@/lib/domain/config";
+import { Province, Station } from "@/lib/domain/types";
 
 const defaultIcon = L.divIcon({
   className: "fuel-marker",
@@ -25,7 +25,34 @@ function markerIcon(color: string) {
   });
 }
 
-export default function LeafletMapCanvas({ stations }: { stations: Station[] }) {
+function ProvinceViewport({ selectedProvince }: { selectedProvince?: Province | "all" }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!selectedProvince || selectedProvince === "all") {
+      map.setView([MAPUTO_CENTER.latitude, MAPUTO_CENTER.longitude], MAPUTO_CENTER.zoom);
+      return;
+    }
+
+    const nextView = provinceMapView[selectedProvince];
+
+    if (nextView) {
+      map.setView([nextView.latitude, nextView.longitude], nextView.zoom, {
+        animate: true
+      });
+    }
+  }, [map, selectedProvince]);
+
+  return null;
+}
+
+export default function LeafletMapCanvas({
+  stations,
+  selectedProvince
+}: {
+  stations: Station[];
+  selectedProvince?: Province | "all";
+}) {
   const [selectedId, setSelectedId] = useState<string | null>(stations[0]?.id ?? null);
 
   const selected = useMemo(
@@ -42,6 +69,7 @@ export default function LeafletMapCanvas({ stations }: { stations: Station[] }) 
       style={{ width: "100%", height: "100%" }}
     >
       <ZoomControl position="topright" />
+      <ProvinceViewport selectedProvince={selectedProvince} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

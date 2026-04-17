@@ -41,7 +41,7 @@ export default async function MapPage({
           </button>
         </form>
         <FilterBar filters={filters} />
-        <MapView stations={stations} />
+        <MapView stations={stations} filters={filters} />
         <MapLegend />
         <section className="stack">
           <div className="section-heading">
