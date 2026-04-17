@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { provinceOptions } from "@/lib/domain/config";
 import { FuelStatus, FuelType, StationFilters } from "@/lib/domain/types";
 
@@ -8,6 +10,7 @@ export function FilterBar({
 }: {
   filters: StationFilters;
 }) {
+  const [showProvinces, setShowProvinces] = useState(false);
   const params = new URLSearchParams();
   if (filters.search) params.set("search", filters.search);
 
@@ -23,17 +26,22 @@ export function FilterBar({
 
   return (
     <div className="filter-bar">
-      <div className="chip-row">
-        {provinceValues.map((province) => (
-          <a
-            key={province}
-            href={linkFor("province", province)}
-            className={`chip ${filters.province === province || (!filters.province && province === "all") ? "is-active" : ""}`}
-          >
-            {province === "all" ? "Todo o país" : province}
-          </a>
-        ))}
-      </div>
+      <details open={showProvinces} onToggle={(event) => setShowProvinces((event.currentTarget as HTMLDetailsElement).open)}>
+        <summary className="filter-toggle">
+          Províncias <ChevronDown size={16} />
+        </summary>
+        <div className="chip-row">
+          {provinceValues.map((province) => (
+            <a
+              key={province}
+              href={linkFor("province", province)}
+              className={`chip ${filters.province === province || (!filters.province && province === "all") ? "is-active" : ""}`}
+            >
+              {province === "all" ? "Todo o país" : province}
+            </a>
+          ))}
+        </div>
+      </details>
       <div className="chip-row">
         {fuelValues.map((fuel) => (
           <a
