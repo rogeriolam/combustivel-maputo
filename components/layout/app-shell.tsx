@@ -5,7 +5,7 @@ import { PropsWithChildren } from "react";
 import { getCurrentUserProfile } from "@/lib/supabase/repository";
 
 const navItems = [
-  { href: "/", label: "Mapa", icon: MapPinned },
+  { href: "/map", label: "Mapa", icon: MapPinned },
   { href: "/dashboard", label: "Dashboard", icon: Gauge },
   { href: "/stations/new", label: "Adicionar", icon: PlusSquare },
   { href: "/alerts", label: "Alertas", icon: Bell },

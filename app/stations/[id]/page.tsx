@@ -23,7 +23,7 @@ export default async function StationDetailPage({
     <AppShell currentPath="/">
       <div className="page">
         <PageHeader
-          backHref="/"
+          backHref="/map"
           title={station.name}
           subtitle={`${station.neighborhood}, ${station.city}`}
         />

@@ -8,7 +8,7 @@ export default async function AdminPage() {
   const profile = await getCurrentUserProfile();
 
   if (profile?.role !== "admin") {
-    redirect("/");
+    redirect("/map");
   }
 
   const [metrics, stations] = await Promise.all([getAdminMetrics(), getStations()]);

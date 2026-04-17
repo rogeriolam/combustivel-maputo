@@ -11,7 +11,7 @@ export function FilterBar({
   const linkFor = (key: string, value: string) => {
     const next = new URLSearchParams(params);
     next.set(key, value);
-    return `/?${next.toString()}`;
+    return `/map?${next.toString()}`;
   };
 
   const cityValues = ["all", "Maputo", "Matola"] as const;
