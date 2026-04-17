@@ -4,10 +4,12 @@ import { Card } from "@/components/ui/card";
 
 export function AuthRequiredCard({
   title,
-  body
+  body,
+  nextHref
 }: {
   title: string;
   body: string;
+  nextHref?: string;
 }) {
   return (
     <Card className="stack">
@@ -22,7 +24,10 @@ export function AuthRequiredCard({
       </div>
       <p className="muted">{body}</p>
       <div className="hero-cta-row">
-        <Link className="primary-button" href="/auth">
+        <Link
+          className="primary-button"
+          href={nextHref ? `/auth?next=${encodeURIComponent(nextHref)}` : "/auth"}
+        >
           Entrar para continuar
         </Link>
         <Link className="ghost-button" href="/map">

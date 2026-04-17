@@ -5,9 +5,11 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Card } from "@/components/ui/card";
 
 export function LoginCard({
-  compact = false
+  compact = false,
+  next = "/profile"
 }: {
   compact?: boolean;
+  next?: string;
 }) {
   const supabase = createSupabaseBrowserClient();
 
@@ -16,7 +18,7 @@ export function LoginCard({
     await supabase.auth.signInWithOAuth({
       provider,
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
       }
     });
   }
@@ -29,7 +31,7 @@ export function LoginCard({
     await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`
+        emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
       }
     });
   }

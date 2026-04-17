@@ -33,6 +33,7 @@ export default async function NewStationPage() {
           <AuthRequiredCard
             title="Entrar para adicionar novas bombas"
             body="Para reduzir abuso e duplicados, a criação de bombas e a primeira sinalização exigem uma conta autenticada."
+            nextHref="/stations/new"
           />
         )}
       </div>

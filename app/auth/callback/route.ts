@@ -5,7 +5,8 @@ import { buildProfilePayload } from "@/lib/supabase/profile";
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
-  const next = requestUrl.searchParams.get("next") ?? "/profile";
+  const rawNext = requestUrl.searchParams.get("next") ?? "/profile";
+  const next = rawNext.startsWith("/") ? rawNext : "/profile";
   const origin = requestUrl.origin;
 
   if (!code) {

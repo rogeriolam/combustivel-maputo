@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
+import { DeleteStationButton } from "@/components/admin/delete-station-button";
 import { Card } from "@/components/ui/card";
 import { getAdminMetrics, getCurrentUserProfile, getStations } from "@/lib/supabase/repository";
 
@@ -46,10 +47,13 @@ export default async function AdminPage() {
           <div className="history-list">
             {stations.map((station) => (
               <div className="history-row" key={station.id}>
-                <strong>{station.name}</strong>
-                <span>
-                  {station.isValidated ? "Activo" : "Rever duplicado"} · {station.neighborhood}, {station.municipality}, {station.province}
-                </span>
+                <div>
+                  <strong>{station.name}</strong>
+                  <span>
+                    {station.isValidated ? "Activo" : "Rever duplicado"} · {station.neighborhood}, {station.municipality}, {station.province}
+                  </span>
+                </div>
+                <DeleteStationButton stationId={station.id} stationName={station.name} />
               </div>
             ))}
           </div>

@@ -82,6 +82,7 @@ export default async function AlertsPage() {
           <AuthRequiredCard
             title="Entrar para criar alertas"
             body="Os alertas são pessoais e precisam de uma conta para guardar preferências e enviar notificações no futuro."
+            nextHref="/alerts"
           />
         )}
       </div>

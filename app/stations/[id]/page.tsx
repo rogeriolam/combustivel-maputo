@@ -69,6 +69,7 @@ export default async function StationDetailPage({
             <AuthRequiredCard
               title="Entrar para actualizar esta bomba"
               body="A leitura do estado é pública, mas novas sinalizações só podem ser feitas por utilizadores autenticados e fisicamente próximos da bomba."
+              nextHref={`/stations/${id}`}
             />
           )}
         </div>

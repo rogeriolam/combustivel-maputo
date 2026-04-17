@@ -3,7 +3,13 @@ import { PageHeader } from "@/components/layout/page-header";
 import { LoginCard } from "@/components/auth/login-card";
 import { Card } from "@/components/ui/card";
 
-export default function AuthPage() {
+export default async function AuthPage({
+  searchParams
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
+  const { next } = await searchParams;
+
   return (
     <AppShell currentPath="/auth">
       <div className="page">
@@ -19,7 +25,7 @@ export default function AuthPage() {
             </p>
           </div>
         </Card>
-        <LoginCard />
+        <LoginCard next={next ?? "/profile"} />
       </div>
     </AppShell>
   );
