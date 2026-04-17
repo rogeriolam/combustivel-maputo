@@ -4,6 +4,7 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import type { Route } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
+import { buildProfilePayload } from "@/lib/supabase/profile";
 
 function AuthCallbackContent() {
   const router = useRouter();
@@ -33,6 +34,25 @@ function AuthCallbackContent() {
         return;
       }
 
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        setMessage("Login concluído, mas não foi possível obter a sessão do utilizador.");
+        return;
+      }
+
+      const { error: profileError } = await supabase.from("profiles").upsert(buildProfilePayload(user), {
+        onConflict: "id"
+      });
+
+      if (profileError) {
+        setMessage(`Sessão criada, mas houve falha ao criar o perfil: ${profileError.message}`);
+        return;
+      }
+
+      setMessage("Login concluído. A redireccionar...");
       router.replace(next);
       router.refresh();
     }
