@@ -166,6 +166,7 @@ Guia mais amigável para primeira publicação:
    - `NEXT_PUBLIC_SUPABASE_URL`
    - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
+   - `ADMIN_EMAILS`
 3. Fazer deploy com preset `Next.js`.
 4. Adicionar o domínio final como redirect URL no Supabase Auth.
 
@@ -199,3 +200,4 @@ Guia mais amigável para primeira publicação:
 - O schema está preparado para evoluir sem reescrever a lógica principal.
 - O callback de login já está preparado em [app/auth/callback/route.ts](/Users/rogerio.lam/Documents/New project/combustivel-maputo/app/auth/callback/route.ts).
 - O mapa usa OpenStreetMap via Leaflet, sem exigir conta Mapbox.
+- O acesso de administrador pode ser atribuído por e-mail via variável `ADMIN_EMAILS`.

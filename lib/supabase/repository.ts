@@ -1,5 +1,6 @@
 import { buildDashboardSummary, calculateFuelAggregate, filterStations } from "@/lib/domain/logic";
 import { mockAlerts, mockProfiles, mockSignals, mockStations } from "@/lib/mocks/data";
+import { buildProfilePayload } from "@/lib/supabase/profile";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { AlertPreference, DashboardSummary, Profile, Signal, Station, StationFilters } from "@/lib/domain/types";
 
@@ -134,15 +135,21 @@ export async function getCurrentUserProfile(): Promise<Profile | null> {
   const { data } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
   if (!data) {
+    const payload = buildProfilePayload(user);
+
+    await supabase.from("profiles").upsert(payload, {
+      onConflict: "id"
+    });
+
     return {
-      id: user.id,
-      fullName: user.user_metadata.full_name ?? user.email ?? "Utilizador",
-      email: user.email ?? "",
-      provider: user.app_metadata.provider ?? "email",
-      reputationScore: 0,
-      reputationWeight: 1,
-      role: "active",
-      createdAt: user.created_at
+      id: payload.id,
+      fullName: payload.full_name,
+      email: payload.email,
+      provider: payload.auth_provider,
+      reputationScore: payload.reputation_score,
+      reputationWeight: payload.reputation_weight,
+      role: payload.role,
+      createdAt: payload.created_at
     };
   }
 
