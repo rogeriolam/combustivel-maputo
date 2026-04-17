@@ -4,7 +4,11 @@ import { Mail, ShieldCheck } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { Card } from "@/components/ui/card";
 
-export function LoginCard() {
+export function LoginCard({
+  compact = false
+}: {
+  compact?: boolean;
+}) {
   const supabase = createSupabaseBrowserClient();
 
   async function handleOAuth(provider: "google" | "apple") {
@@ -33,14 +37,15 @@ export function LoginCard() {
   return (
     <Card className="stack">
       <div className="section-heading">
-        <h2>Entrar</h2>
-        <p>Associamos cada sinalização ao utilizador autenticado para aumentar a confiança dos dados.</p>
+        <h2>{compact ? "Entrar ou registar" : "Entrar"}</h2>
+        <p>
+          {compact
+            ? "Podes continuar como visitante, ou entrar com Google ou e-mail para guardar histórico e contribuir com mais confiança."
+            : "Associamos cada sinalização ao utilizador autenticado para aumentar a confiança dos dados."}
+        </p>
       </div>
       <button className="primary-button" type="button" onClick={() => handleOAuth("google")}>
         Entrar com Google
-      </button>
-      <button className="secondary-button" type="button" onClick={() => handleOAuth("apple")}>
-        Entrar com Apple
       </button>
       <form action={handleEmailLogin} className="stack">
         <label className="field">
