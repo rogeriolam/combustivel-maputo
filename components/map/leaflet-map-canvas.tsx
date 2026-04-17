@@ -48,6 +48,38 @@ function ProvinceViewport({ selectedProvince }: { selectedProvince?: Province | 
   return null;
 }
 
+function CurrentLocationViewport({ selectedProvince }: { selectedProvince?: Province | "all" }) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (selectedProvince && selectedProvince !== "all") {
+      return;
+    }
+
+    if (!navigator.geolocation) {
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        map.setView([position.coords.latitude, position.coords.longitude], 12, {
+          animate: true
+        });
+      },
+      () => {
+        // Fallback silencioso para a vista nacional.
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 60_000,
+        timeout: 8_000
+      }
+    );
+  }, [map, selectedProvince]);
+
+  return null;
+}
+
 export default function LeafletMapCanvas({
   stations,
   selectedProvince
@@ -72,6 +104,7 @@ export default function LeafletMapCanvas({
     >
       <ZoomControl position="topright" />
       <ProvinceViewport selectedProvince={selectedProvince} />
+      <CurrentLocationViewport selectedProvince={selectedProvince} />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

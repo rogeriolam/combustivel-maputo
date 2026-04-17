@@ -69,7 +69,11 @@ export async function POST(request: Request) {
     fuel_type: update.fuelType,
     status_option: update.option,
     user_latitude: userLatitude,
-    user_longitude: userLongitude
+    user_longitude: userLongitude,
+    meta: {
+      reporter_name: profile.full_name,
+      reporter_email: profile.email
+    }
   }));
 
   const { error: insertError } = await supabase.from("signals").insert(rows);
