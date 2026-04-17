@@ -1,9 +1,16 @@
+import { redirect } from "next/navigation";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
-import { getAdminMetrics, getStations } from "@/lib/supabase/repository";
+import { getAdminMetrics, getCurrentUserProfile, getStations } from "@/lib/supabase/repository";
 
 export default async function AdminPage() {
+  const profile = await getCurrentUserProfile();
+
+  if (profile?.role !== "admin") {
+    redirect("/");
+  }
+
   const [metrics, stations] = await Promise.all([getAdminMetrics(), getStations()]);
 
   return (

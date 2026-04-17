@@ -1,6 +1,8 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { Bell, Gauge, MapPinned, PlusSquare, Settings, UserRound } from "lucide-react";
 import { PropsWithChildren } from "react";
+import { getCurrentUserProfile } from "@/lib/supabase/repository";
 
 const navItems = [
   { href: "/", label: "Mapa", icon: MapPinned },
@@ -8,12 +10,19 @@ const navItems = [
   { href: "/stations/new", label: "Adicionar", icon: PlusSquare },
   { href: "/alerts", label: "Alertas", icon: Bell },
   { href: "/profile", label: "Perfil", icon: UserRound }
-];
+] as const satisfies ReadonlyArray<{
+  href: Route;
+  label: string;
+  icon: typeof MapPinned;
+}>;
 
-export function AppShell({
+export async function AppShell({
   children,
   currentPath
 }: PropsWithChildren<{ currentPath: string }>) {
+  const profile = await getCurrentUserProfile();
+  const showAdmin = profile?.role === "admin";
+
   return (
     <div className="shell">
       <main className="shell-main">{children}</main>
@@ -28,13 +37,15 @@ export function AppShell({
             <span>{label}</span>
           </Link>
         ))}
-        <Link
-          href="/admin"
-          className={`bottom-nav-item admin-shortcut ${currentPath === "/admin" ? "is-active" : ""}`}
-        >
-          <Settings size={18} />
-          <span>Admin</span>
-        </Link>
+        {showAdmin ? (
+          <Link
+            href="/admin"
+            className={`bottom-nav-item admin-shortcut ${currentPath === "/admin" ? "is-active" : ""}`}
+          >
+            <Settings size={18} />
+            <span>Admin</span>
+          </Link>
+        ) : null}
       </nav>
     </div>
   );
