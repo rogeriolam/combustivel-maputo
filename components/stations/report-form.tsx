@@ -55,7 +55,7 @@ export function ReportForm({ station }: { station: Station }) {
           }
 
           setFeedback(
-            `Sinalização guardada para ${fuelLabels[fuelType]}. Estado: ${option === "available" ? "Tem" : "Não tem"}.`
+            `Sinalização guardada para ${fuelLabels[fuelType]}: ${option === "available" ? "Tem" : "Não tem"}. O histórico abaixo deve mostrar a tua actualização com data e hora.`
           );
           setPendingKey(null);
           router.refresh();
@@ -73,6 +73,13 @@ export function ReportForm({ station }: { station: Station }) {
       <div className="section-heading">
         <h2>Actualizar no local</h2>
         <p>Escolhe directamente o combustível e o estado a registar. Cada toque guarda só essa opção.</p>
+      </div>
+      <div className="info-strip">
+        <LocateFixed size={16} />
+        <span>
+          Cada registo guarda utilizador, data e hora. O estado público segue a regra das últimas 3 horas e precisa de
+          pelo menos 2 sinais válidos.
+        </span>
       </div>
       <div className="report-grid">
         {(["gasoline", "diesel"] as FuelType[]).map((fuelType) => (

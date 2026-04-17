@@ -87,7 +87,7 @@ export async function getSignalsForStation(stationId: string): Promise<Signal[]>
 
   const { data, error } = await supabase
     .from("signals")
-    .select("*")
+    .select("*, profiles:user_id(full_name,email)")
     .eq("station_id", stationId)
     .order("created_at", { ascending: false });
 
@@ -99,6 +99,8 @@ export async function getSignalsForStation(stationId: string): Promise<Signal[]>
     id: signal.id,
     stationId: signal.station_id,
     userId: signal.user_id,
+    userName: signal.profiles?.full_name ?? undefined,
+    userEmail: signal.profiles?.email ?? undefined,
     fuelType: signal.fuel_type,
     option: signal.status_option,
     createdAt: signal.created_at,

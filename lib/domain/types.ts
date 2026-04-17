@@ -31,6 +31,8 @@ export interface Signal {
   id: string;
   stationId: string;
   userId: string;
+  userName?: string;
+  userEmail?: string;
   fuelType: FuelType;
   option: SignalOption;
   createdAt: string;

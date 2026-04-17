@@ -44,19 +44,25 @@ export default async function StationDetailPage({
           <Card>
             <div className="section-heading">
               <h2>Histórico recente</h2>
-              <p>Guardamos todo o histórico, mas apenas as últimas 3 horas influenciam o estado actual.</p>
+              <p>
+                Guardamos utilizador, data e hora de cada sinalização. Apenas as últimas 3 horas influenciam o estado
+                actual.
+              </p>
             </div>
             <div className="history-list">
               {signals.map((signal) => (
                 <div className="history-row" key={signal.id}>
-                  <strong>
-                    {signal.fuelType === "gasoline" ? "Gasolina" : "Diesel"} ·{" "}
-                    {signal.option === "available" ? "Tem" : "Não tem"}
-                  </strong>
-                  <span>
-                    {format(new Date(signal.createdAt), "dd MMM yyyy, HH:mm", { locale: ptBR })} ·{" "}
-                    {Math.round(signal.distanceMeters)}m
-                  </span>
+                  <div>
+                    <strong>
+                      {signal.fuelType === "gasoline" ? "Gasolina" : "Diesel"} ·{" "}
+                      {signal.option === "available" ? "Tem" : "Não tem"}
+                    </strong>
+                    <span>
+                      {signal.userName ?? signal.userEmail ?? "Utilizador"} ·{" "}
+                      {format(new Date(signal.createdAt), "dd MMM yyyy, HH:mm", { locale: ptBR })} ·{" "}
+                      {Math.round(signal.distanceMeters)}m
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
