@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Route } from "next";
 import { ChevronLeft } from "lucide-react";
 
 export function PageHeader({
@@ -8,7 +9,7 @@ export function PageHeader({
 }: {
   title: string;
   subtitle?: string;
-  backHref?: string;
+  backHref?: Route;
 }) {
   return (
     <header className="page-header">
