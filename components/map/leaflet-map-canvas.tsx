@@ -5,7 +5,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
 import { MAPUTO_CENTER, provinceMapView, statusColors, statusLabels } from "@/lib/domain/config";
 import { Province, Station } from "@/lib/domain/types";
 
@@ -118,6 +118,26 @@ export default function LeafletMapCanvas({
             click: () => setSelectedId(station.id)
           }}
         >
+          <Tooltip direction="top" offset={[0, -18]} opacity={0.95}>
+            <div className="popup-content">
+              <strong>{station.name}</strong>
+              <span>
+                Última actualização:{" "}
+                {station.gasoline.lastUpdatedAt || station.diesel.lastUpdatedAt
+                  ? format(
+                      new Date(
+                        [station.gasoline.lastUpdatedAt, station.diesel.lastUpdatedAt]
+                          .filter(Boolean)
+                          .sort()
+                          .at(-1) as string
+                      ),
+                      "dd MMM yyyy, HH:mm",
+                      { locale: ptBR }
+                    )
+                  : "sem registos"}
+              </span>
+            </div>
+          </Tooltip>
           {selected?.id === station.id ? (
             <Popup>
               <div className="popup-content">

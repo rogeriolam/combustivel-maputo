@@ -261,6 +261,148 @@ Solução:
 
 Problema:
 
+- o utilizador não percebia claramente se estava autenticado ou em modo visitante
+
+Solução:
+
+- distinção explícita entre visitante e autenticado no perfil
+- botões de login visíveis só para visitante
+- logout coerente com a nova landing
+
+## Evolução posterior
+
+### Fase 7: generalização para Moçambique inteiro
+
+- o produto deixou de estar focado só em Maputo/Matola
+- os filtros passaram para `província`
+- o formulário de nova bomba passou a aceitar:
+  - província
+  - cidade / distrito / localidade
+  - bairro / referência
+- o mapa passou a abrir com visão nacional
+
+### Fase 8: migração geográfica no Supabase
+
+- foi criada e executada a migração:
+  - `supabase/migrations/2026-04-17-national-geography.sql`
+- a tabela `stations` deixou de depender de `city`
+- a view `stations_with_current_status` foi recriada
+
+Erro encontrado:
+
+- a migração falhou inicialmente porque a view dependia da coluna `city`
+
+Solução:
+
+- remover primeiro a view
+- alterar o schema
+- recriar a view no fim
+
+### Fase 9: mapa público e acções protegidas
+
+- leitura do mapa continua pública
+- visitantes passaram a ser bloqueados em:
+  - `/stations/new`
+  - actualização de bombas
+  - `/alerts`
+- o login preserva agora o destino protegido original
+
+Exemplo:
+
+- se o utilizador entrar a partir de `/stations/new`, depois do login volta a `/stations/new`
+
+### Fase 10: criação real de bombas e sinalizações
+
+- criação de bomba ligada ao Supabase
+- primeira sinalização opcional ligada ao Supabase
+- sinalização no detalhe da bomba ligada ao Supabase
+- validação GPS activa no fluxo real
+- bloqueio de duplicados activo no servidor
+
+### Fase 11: administração com remoção
+
+- foi criada rota administrativa para remover bombas
+- a remoção apaga a bomba e o histórico associado via `on delete cascade`
+- o botão `Remover` ficou disponível na área de administração
+
+### Fase 12: zoom por província
+
+- ao seleccionar uma província, o mapa já faz zoom e recentra para essa zona
+
+### Fase 13: foco do mapa na localização actual
+
+- sem província seleccionada, o mapa tenta recentrar pela localização GPS do utilizador
+
+### Fase 14: melhoria do fluxo de actualização de combustível
+
+- o ecrã deixou de usar dropdown por combustível
+- passou a permitir seleccionar directamente:
+  - `Gasolina = Tem / Não tem`
+  - `Diesel = Tem / Não tem`
+- foi adicionado botão final:
+  - `Guardar actualização`
+
+### Fase 15: histórico mais auditável
+
+- o histórico da bomba passa a mostrar:
+  - combustível
+  - estado
+  - utilizador
+  - data/hora
+  - distância no momento do registo
+- o cartão do combustível passou a mostrar data/hora exacta da última actualização
+- o popup do mapa passou a mostrar a última actualização
+
+## Erro mais recente encontrado
+
+### 10. Erro RLS recursivo na gravação de sinalizações
+
+Mensagem observada:
+
+- `infinite recursion detected in policy for relation "profiles"`
+
+Causa:
+
+- a leitura de `profiles` dentro da leitura das sinalizações entrava em conflito com as políticas RLS
+
+Solução adoptada:
+
+- guardar `reporter_name` e `reporter_email` no campo `meta` da própria sinalização
+- ler o histórico da sinalização a partir desse `meta`, sem depender da relação com `profiles`
+
+## Estado exacto no fim desta sessão
+
+- o código mais recente já foi:
+  - `commit`
+  - `push`
+- o utilizador **não testou ainda** esta última versão no browser
+
+## Teste pendente para amanhã
+
+Testar em `https://combustivel-maputo.vercel.app`:
+
+1. abrir uma bomba existente
+2. seleccionar:
+   - `Gasolina = Tem` ou `Não tem`
+   - `Diesel = Tem` ou `Não tem`
+3. carregar em `Guardar actualização`
+4. confirmar:
+   - que a actualização é guardada sem erro
+   - que aparece no histórico com utilizador e data/hora
+   - que o popup do mapa mostra a última actualização
+5. voltar ao mapa e confirmar:
+   - foco na localização actual quando não há província seleccionada
+
+## Regras de trabalho a manter
+
+- antes de qualquer `push`, validar sempre localmente com:
+  - `npm run build`
+- usar sempre o domínio estável:
+  - `https://combustivel-maputo.vercel.app`
+- manter `PROJECT-STATUS.md` apenas local
+
+Problema:
+
 - aparecia `Convidado`
 - havia botão `Terminar sessão` mesmo sem sessão útil
 

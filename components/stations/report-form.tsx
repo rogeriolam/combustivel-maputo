@@ -128,6 +128,16 @@ export function ReportForm({ station }: { station: Station }) {
           </div>
         ))}
       </div>
+      {selectedUpdates.length ? (
+        <div className="info-strip">
+          <span>
+            Por guardar:{" "}
+            {selectedUpdates
+              .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
+              .join(" · ")}
+          </span>
+        </div>
+      ) : null}
       <button className="primary-button" type="button" disabled={isPending || !selectedUpdates.length} onClick={submitReport}>
         <LocateFixed size={18} />
         {isPending ? "A guardar..." : "Guardar actualização"}
