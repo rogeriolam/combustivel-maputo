@@ -552,6 +552,12 @@ select {
   gap: 10px;
 }
 
+.report-choice.is-selected {
+  background: var(--accent);
+  color: white;
+  border-color: transparent;
+}
+
 .warning-box {
   display: grid;
   gap: 8px;

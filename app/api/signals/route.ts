@@ -6,6 +6,10 @@ type CreateSignalBody = {
   stationId?: string;
   fuelType?: "gasoline" | "diesel";
   option?: "available" | "unavailable";
+  updates?: Array<{
+    fuelType: "gasoline" | "diesel";
+    option: "available" | "unavailable";
+  }>;
   userLatitude?: number;
   userLongitude?: number;
 };
@@ -42,12 +46,16 @@ export async function POST(request: Request) {
 
   const body = (await request.json()) as CreateSignalBody;
   const stationId = body.stationId?.trim();
-  const fuelType = body.fuelType;
-  const option = body.option;
   const userLatitude = Number(body.userLatitude);
   const userLongitude = Number(body.userLongitude);
+  const updates =
+    body.updates?.length
+      ? body.updates
+      : body.fuelType && body.option
+        ? [{ fuelType: body.fuelType, option: body.option }]
+        : [];
 
-  if (!stationId || !fuelType || !option) {
+  if (!stationId || !updates.length) {
     return NextResponse.json({ ok: false, error: "Faltam dados da sinalização." }, { status: 400 });
   }
 
@@ -55,23 +63,22 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Localização inválida." }, { status: 400 });
   }
 
-  const { error: insertError } = await supabase.from("signals").insert({
+  const rows = updates.map((update) => ({
     station_id: stationId,
     user_id: profile.id,
-    fuel_type: fuelType,
-    status_option: option,
+    fuel_type: update.fuelType,
+    status_option: update.option,
     user_latitude: userLatitude,
     user_longitude: userLongitude
-  });
+  }));
+
+  const { error: insertError } = await supabase.from("signals").insert(rows);
 
   if (insertError) {
     return NextResponse.json(
       {
         ok: false,
-        error:
-          insertError.message === "Sinalização bloqueada: utilizador fora do raio de 100 metros."
-            ? insertError.message
-            : "Não foi possível guardar a sinalização."
+        error: insertError.message || "Não foi possível guardar a sinalização."
       },
       { status: 400 }
     );

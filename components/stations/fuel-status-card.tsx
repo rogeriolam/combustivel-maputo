@@ -1,4 +1,4 @@
-import { formatDistanceToNowStrict } from "date-fns";
+import { format, formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { FuelAggregate } from "@/lib/domain/types";
 import { fuelLabels } from "@/lib/domain/config";
@@ -33,10 +33,13 @@ export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
       <p className="microcopy">
         Última actualização:{" "}
         {aggregate.lastUpdatedAt
-          ? formatDistanceToNowStrict(new Date(aggregate.lastUpdatedAt), {
-              addSuffix: true,
-              locale: ptBR
-            })
+          ? `${format(new Date(aggregate.lastUpdatedAt), "dd MMM yyyy, HH:mm", { locale: ptBR })} (${formatDistanceToNowStrict(
+              new Date(aggregate.lastUpdatedAt),
+              {
+                addSuffix: true,
+                locale: ptBR
+              }
+            )})`
           : "sem registos recentes"}
       </p>
     </Card>

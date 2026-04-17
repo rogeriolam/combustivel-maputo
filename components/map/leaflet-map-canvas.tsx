@@ -2,6 +2,8 @@
 
 import L from "leaflet";
 import Link from "next/link";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, ZoomControl, useMap } from "react-leaflet";
 import { MAPUTO_CENTER, provinceMapView, statusColors, statusLabels } from "@/lib/domain/config";
@@ -92,6 +94,21 @@ export default function LeafletMapCanvas({
                 </span>
                 <span>
                   Gasolina: {statusLabels[station.gasoline.status]} · Diesel: {statusLabels[station.diesel.status]}
+                </span>
+                <span title="Última actualização recente considerada para o estado">
+                  Última actualização:{" "}
+                  {station.gasoline.lastUpdatedAt || station.diesel.lastUpdatedAt
+                    ? format(
+                        new Date(
+                          [station.gasoline.lastUpdatedAt, station.diesel.lastUpdatedAt]
+                            .filter(Boolean)
+                            .sort()
+                            .at(-1) as string
+                        ),
+                        "dd MMM yyyy, HH:mm",
+                        { locale: ptBR }
+                      )
+                    : "sem registos"}
                 </span>
                 <Link href={`/stations/${station.id}`}>Ver detalhe</Link>
               </div>

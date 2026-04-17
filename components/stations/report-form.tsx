@@ -5,21 +5,32 @@ import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
 import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
 import { distanceMeters } from "@/lib/domain/logic";
-import { FuelType, Station } from "@/lib/domain/types";
+import { FuelType, SignalOption, Station } from "@/lib/domain/types";
 
 export function ReportForm({ station }: { station: Station }) {
   const router = useRouter();
   const [feedback, setFeedback] = useState<string>("Usa a tua localização para validar a proximidade.");
-  const [pendingKey, setPendingKey] = useState<string | null>(null);
+  const [selection, setSelection] = useState<Record<FuelType, SignalOption | null>>({
+    gasoline: null,
+    diesel: null
+  });
   const [isPending, startTransition] = useTransition();
 
-  async function submitReport(fuelType: FuelType, option: "available" | "unavailable") {
+  const selectedUpdates = (Object.entries(selection) as Array<[FuelType, SignalOption | null]>)
+    .filter((entry): entry is [FuelType, SignalOption] => Boolean(entry[1]))
+    .map(([fuelType, option]) => ({ fuelType, option }));
+
+  async function submitReport() {
+    if (!selectedUpdates.length) {
+      setFeedback("Selecciona pelo menos um combustível antes de guardar.");
+      return;
+    }
+
     if (!navigator.geolocation) {
       setFeedback("O browser não suporta geolocalização.");
       return;
     }
 
-    setPendingKey(`${fuelType}:${option}`);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
@@ -27,7 +38,6 @@ export function ReportForm({ station }: { station: Station }) {
 
         if (distance > GPS_RADIUS_METERS) {
           setFeedback(`Estás a ${Math.round(distance)}m da bomba. É preciso estar até ${GPS_RADIUS_METERS}m.`);
-          setPendingKey(null);
           return;
         }
 
@@ -39,8 +49,7 @@ export function ReportForm({ station }: { station: Station }) {
             },
             body: JSON.stringify({
               stationId: station.id,
-              fuelType,
-              option,
+              updates: selectedUpdates,
               userLatitude: latitude,
               userLongitude: longitude
             })
@@ -50,20 +59,20 @@ export function ReportForm({ station }: { station: Station }) {
 
           if (!response.ok || !payload.ok) {
             setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
-            setPendingKey(null);
             return;
           }
 
           setFeedback(
-            `Sinalização guardada para ${fuelLabels[fuelType]}: ${option === "available" ? "Tem" : "Não tem"}. O histórico abaixo deve mostrar a tua actualização com data e hora.`
+            `Actualização guardada para ${selectedUpdates
+              .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
+              .join(" · ")}. O histórico abaixo deve mostrar a tua actualização com data e hora.`
           );
-          setPendingKey(null);
+          setSelection({ gasoline: null, diesel: null });
           router.refresh();
         });
       },
       () => {
         setFeedback("Não foi possível obter a localização actual.");
-        setPendingKey(null);
       }
     );
   }
@@ -90,26 +99,39 @@ export function ReportForm({ station }: { station: Station }) {
             </div>
             <div className="report-actions">
               <button
-                className="primary-button"
+                className={`secondary-button ${selection[fuelType] === "available" ? "report-choice is-selected" : "report-choice"}`}
                 type="button"
                 disabled={isPending}
-                onClick={() => submitReport(fuelType, "available")}
+                onClick={() =>
+                  setSelection((current) => ({
+                    ...current,
+                    [fuelType]: "available"
+                  }))
+                }
               >
-                <LocateFixed size={18} />
-                {pendingKey === `${fuelType}:available` ? "A validar..." : "Tem"}
+                Tem
               </button>
               <button
-                className="secondary-button"
+                className={`secondary-button ${selection[fuelType] === "unavailable" ? "report-choice is-selected" : "report-choice"}`}
                 type="button"
                 disabled={isPending}
-                onClick={() => submitReport(fuelType, "unavailable")}
+                onClick={() =>
+                  setSelection((current) => ({
+                    ...current,
+                    [fuelType]: "unavailable"
+                  }))
+                }
               >
-                {pendingKey === `${fuelType}:unavailable` ? "A validar..." : "Não tem"}
+                Não tem
               </button>
             </div>
           </div>
         ))}
       </div>
+      <button className="primary-button" type="button" disabled={isPending || !selectedUpdates.length} onClick={submitReport}>
+        <LocateFixed size={18} />
+        {isPending ? "A guardar..." : "Guardar actualização"}
+      </button>
       <p className="microcopy">{feedback}</p>
     </div>
   );
