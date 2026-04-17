@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
-  title: "Combustível Maputo",
-  description: "MVP mobile-first para sinalização comunitária de combustível em Maputo e Matola."
+  title: "Combustível Moçambique",
+  description: "MVP mobile-first para sinalização comunitária de combustível em Moçambique."
 };
 
 export default function RootLayout({

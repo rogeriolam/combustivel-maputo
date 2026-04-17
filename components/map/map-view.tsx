@@ -7,7 +7,7 @@ const LeafletMap = dynamic(() => import("@/components/map/leaflet-map-canvas"), 
   ssr: false,
   loading: () => (
     <div className="map-fallback">
-      <p>A carregar mapa de Maputo e Matola...</p>
+      <p>A carregar mapa nacional...</p>
     </div>
   )
 });

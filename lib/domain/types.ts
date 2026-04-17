@@ -3,7 +3,18 @@ export type SignalOption = "available" | "unavailable";
 export type FuelStatus = "available" | "unavailable" | "conflict" | "unknown";
 export type ConfidenceLevel = "low" | "medium" | "high";
 export type UserRole = "active" | "blocked" | "admin";
-export type City = "Maputo" | "Matola";
+export type Province =
+  | "Cidade de Maputo"
+  | "Maputo"
+  | "Gaza"
+  | "Inhambane"
+  | "Sofala"
+  | "Manica"
+  | "Tete"
+  | "Zambézia"
+  | "Nampula"
+  | "Cabo Delgado"
+  | "Niassa";
 
 export interface Profile {
   id: string;
@@ -46,7 +57,8 @@ export interface FuelAggregate {
 export interface Station {
   id: string;
   name: string;
-  city: City;
+  province: Province;
+  municipality: string;
   neighborhood: string;
   latitude: number;
   longitude: number;
@@ -63,7 +75,7 @@ export interface AlertPreference {
   id: string;
   userId: string;
   stationId?: string;
-  city?: City;
+  province?: Province;
   fuelType: FuelType;
   triggerStatus: "available";
   channel: "browser" | "email";
@@ -83,7 +95,7 @@ export interface DashboardSummary {
 
 export interface StationFilters {
   search?: string;
-  city?: City | "all";
+  province?: Province | "all";
   fuelType?: FuelType | "all";
   status?: FuelStatus | "all";
 }

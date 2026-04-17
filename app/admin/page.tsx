@@ -48,7 +48,7 @@ export default async function AdminPage() {
               <div className="history-row" key={station.id}>
                 <strong>{station.name}</strong>
                 <span>
-                  {station.isValidated ? "Activo" : "Rever duplicado"} · {station.neighborhood}, {station.city}
+                  {station.isValidated ? "Activo" : "Rever duplicado"} · {station.neighborhood}, {station.municipality}, {station.province}
                 </span>
               </div>
             ))}

@@ -68,7 +68,7 @@ export default async function AlertsPage() {
                     <strong>
                       {alert.stationId
                         ? stations.find((station) => station.id === alert.stationId)?.name ?? "Bomba"
-                        : alert.city}
+                        : alert.province}
                     </strong>
                     <span>
                       Avisar quando {fuelLabels[alert.fuelType]} tiver stock via {alert.channel}

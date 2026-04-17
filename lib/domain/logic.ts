@@ -164,7 +164,8 @@ export function filterStations(stations: Station[], filters: StationFilters): St
     const matchesSearch = filters.search
       ? station.name.toLowerCase().includes(filters.search.toLowerCase())
       : true;
-    const matchesCity = !filters.city || filters.city === "all" ? true : station.city === filters.city;
+    const matchesProvince =
+      !filters.province || filters.province === "all" ? true : station.province === filters.province;
 
     const activeFuel =
       filters.fuelType && filters.fuelType !== "all"
@@ -178,7 +179,7 @@ export function filterStations(stations: Station[], filters: StationFilters): St
           ? activeFuel.status === filters.status
           : station.gasoline.status === filters.status || station.diesel.status === filters.status;
 
-    return matchesSearch && matchesCity && matchesStatus;
+    return matchesSearch && matchesProvince && matchesStatus;
   });
 }
 

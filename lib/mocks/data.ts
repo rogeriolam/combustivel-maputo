@@ -24,7 +24,7 @@ export const mockProfiles: Profile[] = [
   },
   {
     id: "admin-1",
-    fullName: "Admin Combustível Maputo",
+    fullName: "Admin Combustível Moçambique",
     email: "admin@example.com",
     provider: "google",
     reputationScore: 98,
@@ -145,7 +145,8 @@ const baseStations = [
   {
     id: "station-1",
     name: "Petromoc Julius Nyerere",
-    city: "Maputo" as const,
+    province: "Cidade de Maputo" as const,
+    municipality: "Maputo",
     neighborhood: "Polana Cimento",
     latitude: -25.9532,
     longitude: 32.5922,
@@ -158,7 +159,8 @@ const baseStations = [
   {
     id: "station-2",
     name: "Galp Machava",
-    city: "Matola" as const,
+    province: "Maputo" as const,
+    municipality: "Matola",
     neighborhood: "Machava",
     latitude: -25.9119,
     longitude: 32.495,
@@ -171,7 +173,8 @@ const baseStations = [
   {
     id: "station-3",
     name: "TotalEnergies Matola Rio",
-    city: "Matola" as const,
+    province: "Maputo" as const,
+    municipality: "Matola",
     neighborhood: "Matola Rio",
     latitude: -25.8728,
     longitude: 32.4604,
@@ -206,11 +209,21 @@ export const mockAlerts: AlertPreference[] = [
   {
     id: "alert-2",
     userId: "user-1",
-    city: "Maputo",
+    province: "Cidade de Maputo",
     fuelType: "diesel",
     triggerStatus: "available",
     channel: "email",
     isActive: true,
     createdAt: "2026-04-15T11:10:00.000Z"
+  },
+  {
+    id: "alert-3",
+    userId: "user-1",
+    province: "Sofala",
+    fuelType: "gasoline",
+    triggerStatus: "available",
+    channel: "browser",
+    isActive: false,
+    createdAt: "2026-04-15T12:10:00.000Z"
   }
 ];

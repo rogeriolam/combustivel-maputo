@@ -1,3 +1,6 @@
+"use client";
+
+import { provinceOptions } from "@/lib/domain/config";
 import { FuelStatus, FuelType, StationFilters } from "@/lib/domain/types";
 
 export function FilterBar({
@@ -14,20 +17,20 @@ export function FilterBar({
     return `/map?${next.toString()}`;
   };
 
-  const cityValues = ["all", "Maputo", "Matola"] as const;
+  const provinceValues = ["all", ...provinceOptions] as const;
   const fuelValues: Array<"all" | FuelType> = ["all", "gasoline", "diesel"];
   const statusValues: Array<"all" | FuelStatus> = ["all", "available", "unavailable", "conflict", "unknown"];
 
   return (
     <div className="filter-bar">
       <div className="chip-row">
-        {cityValues.map((city) => (
+        {provinceValues.map((province) => (
           <a
-            key={city}
-            href={linkFor("city", city)}
-            className={`chip ${filters.city === city || (!filters.city && city === "all") ? "is-active" : ""}`}
+            key={province}
+            href={linkFor("province", province)}
+            className={`chip ${filters.province === province || (!filters.province && province === "all") ? "is-active" : ""}`}
           >
-            {city === "all" ? "Toda a área" : city}
+            {province === "all" ? "Todo o país" : province}
           </a>
         ))}
       </div>

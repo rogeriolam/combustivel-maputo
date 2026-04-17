@@ -24,11 +24,11 @@ export default async function LandingPage() {
         <div className="hero-grid">
           <div className="hero-copy">
             <p className="eyebrow">Crise de combustível em Moçambique</p>
-            <h1>Descobre quais bombas têm combustível e ajuda a comunidade com informação útil.</h1>
+            <h1>Descobre quais bombas têm combustível em Moçambique e ajuda a comunidade com informação útil.</h1>
             <p className="hero-text">
-              A app nasceu para Maputo e Matola, num contexto em que encontrar Gasolina ou Diesel pode significar
-              perder horas. O mapa ajuda a ver rapidamente o estado das bombas, mas só funciona bem quando as pessoas
-              partilham observações reais no local.
+              A app nasceu num contexto nacional de escassez, em que encontrar Gasolina ou Diesel pode significar
+              perder horas, quilómetros e oportunidades. O mapa ajuda a ver rapidamente o estado das bombas, mas só
+              funciona bem quando as pessoas partilham observações reais no local.
             </p>
             <div className="hero-cta-row">
               <Link className="primary-button" href="/map">
@@ -64,12 +64,12 @@ export default async function LandingPage() {
             <div className="stack">
               <div className="section-heading">
                 <h2>Como funciona</h2>
-                <p>Leitura pública, contribuição opcional com conta.</p>
+            <p>Leitura pública, contribuição opcional com conta.</p>
               </div>
               <div className="landing-list">
                 <div>
                   <strong>1. Ver mapa</strong>
-                  <p>Qualquer pessoa pode consultar o estado das bombas sem criar conta.</p>
+                  <p>Qualquer pessoa pode consultar o estado das bombas no país sem criar conta.</p>
                 </div>
                 <div>
                   <strong>2. Entrar para contribuir</strong>
@@ -99,7 +99,7 @@ export default async function LandingPage() {
               <MapPinned size={20} />
             </div>
             <h3>Mapa público e rápido</h3>
-            <p>Consulta imediata de bombas em Maputo e Matola, com leitura simples por combustível e estado.</p>
+            <p>Consulta imediata de bombas em várias províncias, com leitura simples por combustível e estado.</p>
           </Card>
           <Card>
             <div className="icon-badge">

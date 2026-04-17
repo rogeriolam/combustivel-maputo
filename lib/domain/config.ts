@@ -1,7 +1,7 @@
 export const MAPUTO_CENTER = {
-  latitude: -25.9453,
-  longitude: 32.5892,
-  zoom: 10.9
+  latitude: -18.665695,
+  longitude: 35.529562,
+  zoom: 4.8
 };
 
 export const GPS_RADIUS_METERS = 100;
@@ -33,3 +33,17 @@ export const statusColors = {
   conflict: "var(--status-conflict)",
   unknown: "var(--status-unknown)"
 } as const;
+
+export const provinceOptions = [
+  "Cidade de Maputo",
+  "Maputo",
+  "Gaza",
+  "Inhambane",
+  "Sofala",
+  "Manica",
+  "Tete",
+  "Zambézia",
+  "Nampula",
+  "Cabo Delgado",
+  "Niassa"
+] as const;

@@ -60,7 +60,7 @@ export default function LeafletMapCanvas({ stations }: { stations: Station[] }) 
               <div className="popup-content">
                 <strong>{station.name}</strong>
                 <span>
-                  {station.neighborhood}, {station.city}
+                  {station.neighborhood}, {station.municipality}, {station.province}
                 </span>
                 <span>
                   Gasolina: {statusLabels[station.gasoline.status]} · Diesel: {statusLabels[station.diesel.status]}

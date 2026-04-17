@@ -27,7 +27,7 @@ export default async function StationDetailPage({
         <PageHeader
           backHref="/map"
           title={station.name}
-          subtitle={`${station.neighborhood}, ${station.city}`}
+          subtitle={`${station.neighborhood}, ${station.municipality}, ${station.province}`}
         />
         <div className="stack">
           <FuelStatusCard aggregate={station.gasoline} />

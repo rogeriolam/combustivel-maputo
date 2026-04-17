@@ -31,7 +31,8 @@ export async function getStations(filters: StationFilters = {}): Promise<Station
     stations.map((station) => ({
       id: station.id,
       name: station.name,
-      city: station.city,
+      province: station.province,
+      municipality: station.municipality,
       neighborhood: station.neighborhood,
       latitude: station.latitude,
       longitude: station.longitude,
@@ -194,7 +195,7 @@ export async function getAlerts(): Promise<AlertPreference[]> {
     id: alert.id,
     userId: alert.user_id,
     stationId: alert.station_id ?? undefined,
-    city: alert.city ?? undefined,
+    province: alert.province ?? undefined,
     fuelType: alert.fuel_type,
     triggerStatus: alert.trigger_status,
     channel: alert.channel,

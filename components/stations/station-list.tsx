@@ -13,10 +13,10 @@ export function StationList({ stations }: { stations: Station[] }) {
               <div>
                 <h3>{station.name}</h3>
                 <p>
-                  {station.neighborhood}, {station.city}
+                  {station.neighborhood}, {station.municipality}, {station.province}
                 </p>
               </div>
-              <span className="distance-pill">{station.city}</span>
+              <span className="distance-pill">{station.province}</span>
             </div>
             <div className="status-row">
               <div>

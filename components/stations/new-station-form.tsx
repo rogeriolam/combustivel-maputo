@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { GPS_RADIUS_METERS } from "@/lib/domain/config";
+import { GPS_RADIUS_METERS, provinceOptions } from "@/lib/domain/config";
 import { getDuplicateCandidates } from "@/lib/domain/logic";
 import { Station } from "@/lib/domain/types";
 
@@ -46,11 +46,18 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
         <input placeholder="Ex.: Petromoc Costa do Sol" />
       </label>
       <label className="field">
-        <span>Cidade / zona</span>
-        <select defaultValue="Maputo">
-          <option value="Maputo">Maputo</option>
-          <option value="Matola">Matola</option>
+        <span>Província</span>
+        <select defaultValue="Cidade de Maputo">
+          {provinceOptions.map((province) => (
+            <option key={province} value={province}>
+              {province}
+            </option>
+          ))}
         </select>
+      </label>
+      <label className="field">
+        <span>Cidade / distrito / localidade</span>
+        <input placeholder="Ex.: Matola, Beira, Nampula, Chimoio" />
       </label>
       <label className="field">
         <span>Bairro / referência</span>
@@ -74,7 +81,7 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
           <strong>Possível duplicado dentro de {GPS_RADIUS_METERS}m</strong>
           {duplicates.map((station) => (
             <a key={station.id} href={`/stations/${station.id}`}>
-              {station.name} · {station.neighborhood}, {station.city}
+              {station.name} · {station.neighborhood}, {station.municipality}, {station.province}
             </a>
           ))}
         </div>
