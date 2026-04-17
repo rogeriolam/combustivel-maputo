@@ -1,4 +1,5 @@
 import { calculateReputation } from "@/lib/domain/logic";
+import { UserRole } from "@/lib/domain/types";
 
 function parseAdminEmails() {
   const raw = process.env.ADMIN_EMAILS ?? "";
@@ -22,6 +23,7 @@ export function buildProfilePayload(user: {
   app_metadata?: { provider?: string };
 }) {
   const reputationScore = 0;
+  const role: UserRole = isAdminEmail(user.email) ? "admin" : "active";
 
   return {
     id: user.id,
@@ -30,7 +32,7 @@ export function buildProfilePayload(user: {
     auth_provider: user.app_metadata?.provider ?? "email",
     reputation_score: reputationScore,
     reputation_weight: calculateReputation({ reputationScore }),
-    role: isAdminEmail(user.email) ? "admin" : "active",
+    role,
     created_at: user.created_at
   };
 }
