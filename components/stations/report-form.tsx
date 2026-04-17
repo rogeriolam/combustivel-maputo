@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
 import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
 import { distanceMeters } from "@/lib/domain/logic";
 import { FuelType, Station } from "@/lib/domain/types";
 
 export function ReportForm({ station }: { station: Station }) {
+  const router = useRouter();
   const [feedback, setFeedback] = useState<string>("Usa a tua localização para validar a proximidade.");
 
   async function handleReport(formData: FormData) {
@@ -28,9 +30,31 @@ export function ReportForm({ station }: { station: Station }) {
           return;
         }
 
+        const response = await fetch("/api/signals", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            stationId: station.id,
+            fuelType,
+            option,
+            userLatitude: latitude,
+            userLongitude: longitude
+          })
+        });
+
+        const payload = (await response.json()) as { ok?: boolean; error?: string };
+
+        if (!response.ok || !payload.ok) {
+          setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
+          return;
+        }
+
         setFeedback(
-          `Validação aprovada para ${fuelLabels[fuelType]}. Estado seleccionado: ${option === "available" ? "Tem" : "Não tem"}.`
+          `Sinalização guardada para ${fuelLabels[fuelType]}. Estado: ${option === "available" ? "Tem" : "Não tem"}.`
         );
+        router.refresh();
       },
       () => setFeedback("Não foi possível obter a localização actual.")
     );

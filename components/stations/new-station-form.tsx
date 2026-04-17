@@ -1,16 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { GPS_RADIUS_METERS, provinceOptions } from "@/lib/domain/config";
 import { getDuplicateCandidates } from "@/lib/domain/logic";
-import { Station } from "@/lib/domain/types";
+import { Province, Station } from "@/lib/domain/types";
 
 export function NewStationForm({ stations }: { stations: Station[] }) {
+  const router = useRouter();
   const [latitude, setLatitude] = useState("-25.9453");
   const [longitude, setLongitude] = useState("32.5892");
+  const [name, setName] = useState("");
+  const [province, setProvince] = useState<Province>("Cidade de Maputo");
+  const [municipality, setMunicipality] = useState("");
+  const [neighborhood, setNeighborhood] = useState("");
+  const [gasolineOption, setGasolineOption] = useState("");
+  const [dieselOption, setDieselOption] = useState("");
   const [statusMessage, setStatusMessage] = useState(
     "Confirma a tua localização actual e o nome da bomba para publicar já no mapa."
   );
+  const [isPending, startTransition] = useTransition();
 
   const duplicates = useMemo(() => {
     const lat = Number(latitude);
@@ -39,15 +48,68 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
     );
   }
 
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const lat = Number(latitude);
+    const lng = Number(longitude);
+
+    if (!name.trim() || !municipality.trim() || !neighborhood.trim()) {
+      setStatusMessage("Preenche nome, município/localidade e bairro/referência.");
+      return;
+    }
+
+    if (Number.isNaN(lat) || Number.isNaN(lng)) {
+      setStatusMessage("Latitude e longitude têm de ser números válidos.");
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        const response = await fetch("/api/stations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            name: name.trim(),
+            province,
+            municipality: municipality.trim(),
+            neighborhood: neighborhood.trim(),
+            latitude: lat,
+            longitude: lng,
+            initialSignals: {
+              gasoline: gasolineOption || undefined,
+              diesel: dieselOption || undefined
+            }
+          })
+        });
+
+        const payload = (await response.json()) as { ok?: boolean; error?: string; stationId?: string };
+
+        if (!response.ok || !payload.ok || !payload.stationId) {
+          setStatusMessage(payload.error ?? "Não foi possível publicar a bomba.");
+          return;
+        }
+
+        setStatusMessage("Bomba publicada com sucesso. A abrir detalhe...");
+        router.push(`/stations/${payload.stationId}`);
+        router.refresh();
+      } catch {
+        setStatusMessage("Falha de rede ao publicar a bomba.");
+      }
+    });
+  }
+
   return (
-    <form className="stack">
+    <form className="stack" onSubmit={handleSubmit}>
       <label className="field">
         <span>Nome da bomba</span>
-        <input placeholder="Ex.: Petromoc Costa do Sol" />
+        <input placeholder="Ex.: Petromoc Costa do Sol" value={name} onChange={(event) => setName(event.target.value)} />
       </label>
       <label className="field">
         <span>Província</span>
-        <select defaultValue="Cidade de Maputo">
+        <select value={province} onChange={(event) => setProvince(event.target.value as Province)}>
           {provinceOptions.map((province) => (
             <option key={province} value={province}>
               {province}
@@ -57,11 +119,19 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
       </label>
       <label className="field">
         <span>Cidade / distrito / localidade</span>
-        <input placeholder="Ex.: Matola, Beira, Nampula, Chimoio" />
+        <input
+          placeholder="Ex.: Matola, Beira, Nampula, Chimoio"
+          value={municipality}
+          onChange={(event) => setMunicipality(event.target.value)}
+        />
       </label>
       <label className="field">
         <span>Bairro / referência</span>
-        <input placeholder="Ex.: Av. Julius Nyerere" />
+        <input
+          placeholder="Ex.: Av. Julius Nyerere"
+          value={neighborhood}
+          onChange={(event) => setNeighborhood(event.target.value)}
+        />
       </label>
       <div className="grid-two">
         <label className="field">
@@ -93,7 +163,7 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
       <div className="grid-two">
         <label className="field">
           <span>Gasolina</span>
-          <select defaultValue="">
+          <select value={gasolineOption} onChange={(event) => setGasolineOption(event.target.value)}>
             <option value="">Sem actualizar</option>
             <option value="available">Tem</option>
             <option value="unavailable">Não tem</option>
@@ -101,15 +171,15 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
         </label>
         <label className="field">
           <span>Diesel</span>
-          <select defaultValue="">
+          <select value={dieselOption} onChange={(event) => setDieselOption(event.target.value)}>
             <option value="">Sem actualizar</option>
             <option value="available">Tem</option>
             <option value="unavailable">Não tem</option>
           </select>
         </label>
       </div>
-      <button className="primary-button" type="button">
-        Publicar bomba
+      <button className="primary-button" type="submit" disabled={isPending}>
+        {isPending ? "A publicar..." : "Publicar bomba"}
       </button>
       <p className="microcopy">{statusMessage}</p>
     </form>
