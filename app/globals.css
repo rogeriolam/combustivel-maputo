@@ -297,6 +297,16 @@ select {
   box-shadow: var(--shadow);
 }
 
+.action-card {
+  background: linear-gradient(135deg, rgba(20, 128, 74, 0.12), rgba(15, 118, 110, 0.08));
+  border: 2px solid var(--accent);
+  margin-bottom: 20px;
+}
+
+.action-card .primary-button {
+  width: 100%;
+}
+
 .stack {
   display: grid;
   gap: 14px;

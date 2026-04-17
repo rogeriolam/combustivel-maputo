@@ -4,7 +4,7 @@ import { FilterBar } from "@/components/stations/filter-bar";
 import { StationList } from "@/components/stations/station-list";
 import { MapLegend } from "@/components/map/map-legend";
 import { MapView } from "@/components/map/map-view";
-import { getStations } from "@/lib/supabase/repository";
+import { getCurrentUserProfile, getStations } from "@/lib/supabase/repository";
 import { StationFilters } from "@/lib/domain/types";
 
 export default async function MapPage({
@@ -20,7 +20,7 @@ export default async function MapPage({
     status: typeof params.status === "string" ? (params.status as StationFilters["status"]) : "all"
   };
 
-  const stations = await getStations(filters);
+  const [stations, profile] = await Promise.all([getStations(filters), getCurrentUserProfile()]);
 
   return (
     <AppShell currentPath="/map">
@@ -48,7 +48,7 @@ export default async function MapPage({
             <h2>Bombas no mapa</h2>
             <p>{stations.length} resultados na vista actual.</p>
           </div>
-          <StationList stations={stations} />
+          <StationList stations={stations} isAuthenticated={Boolean(profile)} />
         </section>
       </div>
     </AppShell>

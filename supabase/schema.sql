@@ -303,14 +303,16 @@ alter table signals enable row level security;
 alter table alerts enable row level security;
 alter table admin_actions enable row level security;
 
+drop policy if exists "profiles_select_self" on profiles;
 create policy "profiles_select_self" on profiles
-for select using (auth.uid() = id or exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'admin'));
+for select using (auth.uid() = id);
 
 create policy "profiles_insert_self" on profiles
 for insert with check (auth.uid() = id);
 
+drop policy if exists "profiles_update_self" on profiles;
 create policy "profiles_update_self" on profiles
-for update using (auth.uid() = id or exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'admin'));
+for update using (auth.uid() = id);
 
 create policy "stations_read_all" on stations for select using (true);
 create policy "stations_insert_authenticated" on stations
