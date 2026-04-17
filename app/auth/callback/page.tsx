@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { Route } from "next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
@@ -13,7 +14,7 @@ export default function AuthCallbackPage() {
   useEffect(() => {
     async function finishOAuth() {
       const code = searchParams.get("code");
-      const next = searchParams.get("next") ?? "/profile";
+      const next = (searchParams.get("next") ?? "/profile") as Route;
 
       if (!supabase) {
         setMessage("Supabase não está configurado nesta sessão.");
