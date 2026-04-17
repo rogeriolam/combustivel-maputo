@@ -1,11 +1,13 @@
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
+import { AuthRequiredCard } from "@/components/auth/auth-required-card";
 import { Card } from "@/components/ui/card";
 import { NewStationForm } from "@/components/stations/new-station-form";
-import { getStations } from "@/lib/supabase/repository";
+import { getCurrentUserProfile, getStations } from "@/lib/supabase/repository";
 
 export default async function NewStationPage() {
-  const stations = await getStations();
+  const [stations, profile] = await Promise.all([getStations(), getCurrentUserProfile()]);
+  const isAuthenticated = Boolean(profile);
 
   return (
     <AppShell currentPath="/stations/new">
@@ -23,9 +25,16 @@ export default async function NewStationPage() {
             </p>
           </div>
         </Card>
-        <Card>
-          <NewStationForm stations={stations} />
-        </Card>
+        {isAuthenticated ? (
+          <Card>
+            <NewStationForm stations={stations} />
+          </Card>
+        ) : (
+          <AuthRequiredCard
+            title="Entrar para adicionar novas bombas"
+            body="Para reduzir abuso e duplicados, a criação de bombas e a primeira sinalização exigem uma conta autenticada."
+          />
+        )}
       </div>
     </AppShell>
   );

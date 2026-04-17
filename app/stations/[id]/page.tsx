@@ -2,11 +2,12 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AppShell } from "@/components/layout/app-shell";
+import { AuthRequiredCard } from "@/components/auth/auth-required-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
 import { FuelStatusCard } from "@/components/stations/fuel-status-card";
 import { ReportForm } from "@/components/stations/report-form";
-import { getSignalsForStation, getStationById } from "@/lib/supabase/repository";
+import { getCurrentUserProfile, getSignalsForStation, getStationById } from "@/lib/supabase/repository";
 
 export default async function StationDetailPage({
   params
@@ -17,10 +18,11 @@ export default async function StationDetailPage({
   const station = await getStationById(id);
   if (!station) notFound();
 
-  const signals = await getSignalsForStation(id);
+  const [signals, profile] = await Promise.all([getSignalsForStation(id), getCurrentUserProfile()]);
+  const isAuthenticated = Boolean(profile);
 
   return (
-    <AppShell currentPath="/">
+    <AppShell currentPath="/map">
       <div className="page">
         <PageHeader
           backHref="/map"
@@ -59,9 +61,16 @@ export default async function StationDetailPage({
               ))}
             </div>
           </Card>
-          <Card>
-            <ReportForm station={station} />
-          </Card>
+          {isAuthenticated ? (
+            <Card>
+              <ReportForm station={station} />
+            </Card>
+          ) : (
+            <AuthRequiredCard
+              title="Entrar para actualizar esta bomba"
+              body="A leitura do estado é pública, mas novas sinalizações só podem ser feitas por utilizadores autenticados e fisicamente próximos da bomba."
+            />
+          )}
         </div>
       </div>
     </AppShell>
