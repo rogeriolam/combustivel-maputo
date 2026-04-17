@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
 import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
@@ -10,16 +10,16 @@ import { FuelType, Station } from "@/lib/domain/types";
 export function ReportForm({ station }: { station: Station }) {
   const router = useRouter();
   const [feedback, setFeedback] = useState<string>("Usa a tua localização para validar a proximidade.");
+  const [pendingKey, setPendingKey] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-  async function handleReport(formData: FormData) {
-    const fuelType = String(formData.get("fuelType")) as FuelType;
-    const option = String(formData.get("option"));
-
+  async function submitReport(fuelType: FuelType, option: "available" | "unavailable") {
     if (!navigator.geolocation) {
       setFeedback("O browser não suporta geolocalização.");
       return;
     }
 
+    setPendingKey(`${fuelType}:${option}`);
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
@@ -27,67 +27,83 @@ export function ReportForm({ station }: { station: Station }) {
 
         if (distance > GPS_RADIUS_METERS) {
           setFeedback(`Estás a ${Math.round(distance)}m da bomba. É preciso estar até ${GPS_RADIUS_METERS}m.`);
+          setPendingKey(null);
           return;
         }
 
-        const response = await fetch("/api/signals", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            stationId: station.id,
-            fuelType,
-            option,
-            userLatitude: latitude,
-            userLongitude: longitude
-          })
+        startTransition(async () => {
+          const response = await fetch("/api/signals", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              stationId: station.id,
+              fuelType,
+              option,
+              userLatitude: latitude,
+              userLongitude: longitude
+            })
+          });
+
+          const payload = (await response.json()) as { ok?: boolean; error?: string };
+
+          if (!response.ok || !payload.ok) {
+            setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
+            setPendingKey(null);
+            return;
+          }
+
+          setFeedback(
+            `Sinalização guardada para ${fuelLabels[fuelType]}. Estado: ${option === "available" ? "Tem" : "Não tem"}.`
+          );
+          setPendingKey(null);
+          router.refresh();
         });
-
-        const payload = (await response.json()) as { ok?: boolean; error?: string };
-
-        if (!response.ok || !payload.ok) {
-          setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
-          return;
-        }
-
-        setFeedback(
-          `Sinalização guardada para ${fuelLabels[fuelType]}. Estado: ${option === "available" ? "Tem" : "Não tem"}.`
-        );
-        router.refresh();
       },
-      () => setFeedback("Não foi possível obter a localização actual.")
+      () => {
+        setFeedback("Não foi possível obter a localização actual.");
+        setPendingKey(null);
+      }
     );
   }
 
   return (
-    <form action={handleReport} className="stack">
+    <div className="stack">
       <div className="section-heading">
         <h2>Actualizar no local</h2>
-        <p>Podes actualizar um combustível sem alterar o outro.</p>
+        <p>Escolhe directamente o combustível e o estado a registar. Cada toque guarda só essa opção.</p>
       </div>
-      <label className="field">
-        <span>Combustível</span>
-        <select name="fuelType" defaultValue="gasoline">
-          <option value="gasoline">Gasolina</option>
-          <option value="diesel">Diesel</option>
-        </select>
-      </label>
-      <div className="segment-control">
-        <label>
-          <input type="radio" name="option" value="available" defaultChecked />
-          <span>Tem</span>
-        </label>
-        <label>
-          <input type="radio" name="option" value="unavailable" />
-          <span>Não tem</span>
-        </label>
+      <div className="report-grid">
+        {(["gasoline", "diesel"] as FuelType[]).map((fuelType) => (
+          <div className="report-card" key={fuelType}>
+            <div className="section-heading">
+              <h2>{fuelLabels[fuelType]}</h2>
+              <p>Selecciona o estado observado agora mesmo nesta bomba.</p>
+            </div>
+            <div className="report-actions">
+              <button
+                className="primary-button"
+                type="button"
+                disabled={isPending}
+                onClick={() => submitReport(fuelType, "available")}
+              >
+                <LocateFixed size={18} />
+                {pendingKey === `${fuelType}:available` ? "A validar..." : "Tem"}
+              </button>
+              <button
+                className="secondary-button"
+                type="button"
+                disabled={isPending}
+                onClick={() => submitReport(fuelType, "unavailable")}
+              >
+                {pendingKey === `${fuelType}:unavailable` ? "A validar..." : "Não tem"}
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
-      <button className="primary-button" type="submit">
-        <LocateFixed size={18} />
-        Validar localização e sinalizar
-      </button>
       <p className="microcopy">{feedback}</p>
-    </form>
+    </div>
   );
 }
