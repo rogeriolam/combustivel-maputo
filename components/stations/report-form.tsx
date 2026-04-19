@@ -7,7 +7,13 @@ import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
 import { distanceMeters } from "@/lib/domain/logic";
 import { FuelType, SignalOption, Station } from "@/lib/domain/types";
 
-export function ReportForm({ station }: { station: Station }) {
+export function ReportForm({
+  station,
+  isAuthenticated
+}: {
+  station: Station;
+  isAuthenticated: boolean;
+}) {
   const router = useRouter();
   const [feedback, setFeedback] = useState<string>("Usa a tua localização para validar a proximidade.");
   const [selection, setSelection] = useState<Record<FuelType, SignalOption | null>>({
@@ -93,6 +99,11 @@ export function ReportForm({ station }: { station: Station }) {
           pelo menos 2 sinais válidos.
         </span>
       </div>
+      <p className="microcopy">
+        {isAuthenticated
+          ? "Estás a sinalizar com a tua conta. A tua actualização ficará associada ao teu perfil."
+          : "Podes sinalizar como visitante. Para criar bombas e gerir alertas, continua a ser preciso iniciar sessão."}
+      </p>
       <div className="report-grid">
         {(["gasoline", "diesel"] as FuelType[]).map((fuelType) => (
           <div className="report-card" key={fuelType}>

@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { buildProfilePayload } from "@/lib/supabase/profile";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type CreateSignalBody = {
@@ -14,7 +13,7 @@ type CreateSignalBody = {
   userLongitude?: number;
 };
 
-async function getOrCreateProfile() {
+async function getReporterContext() {
   const supabase = await createSupabaseServerClient();
   if (!supabase) {
     return { supabase: null, profile: null, error: "Supabase não configurado." };
@@ -25,22 +24,21 @@ async function getOrCreateProfile() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { supabase, profile: null, error: "É preciso iniciar sessão para sinalizar." };
+    return { supabase, profile: null, error: null };
   }
 
-  const payload = buildProfilePayload(user);
-  await supabase.from("profiles").upsert(payload, { onConflict: "id" });
+  const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single();
 
   return {
     supabase,
-    profile: payload,
+    profile,
     error: null
   };
 }
 
 export async function POST(request: Request) {
-  const { supabase, profile, error } = await getOrCreateProfile();
-  if (!supabase || !profile || error) {
+  const { supabase, profile, error } = await getReporterContext();
+  if (!supabase || error) {
     return NextResponse.json({ ok: false, error }, { status: 401 });
   }
 
@@ -65,14 +63,15 @@ export async function POST(request: Request) {
 
   const rows = updates.map((update) => ({
     station_id: stationId,
-    user_id: profile.id,
+    user_id: profile?.id ?? null,
     fuel_type: update.fuelType,
     status_option: update.option,
     user_latitude: userLatitude,
     user_longitude: userLongitude,
     meta: {
-      reporter_name: profile.full_name,
-      reporter_email: profile.email
+      reporter_name: profile?.full_name ?? "Visitante",
+      reporter_email: profile?.email ?? null,
+      reporter_kind: profile ? "authenticated" : "guest"
     }
   }));
 

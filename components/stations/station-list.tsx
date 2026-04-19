@@ -17,10 +17,10 @@ export function StationList({
         <Card className="action-card">
           <div className="section-heading">
             <h3>Quer contribuir?</h3>
-            <p>Sinaliza o combustível que viste junto de uma bomba.</p>
+            <p>Podes sinalizar o combustível que viste junto de uma bomba, mesmo como visitante.</p>
           </div>
           <Link href="/auth" className="primary-button">
-            Entrar para sinalizar
+            Entrar para criar bombas e alertas
           </Link>
         </Card>
       ) : (

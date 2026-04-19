@@ -30,7 +30,7 @@ export interface Profile {
 export interface Signal {
   id: string;
   stationId: string;
-  userId: string;
+  userId?: string;
   userName?: string;
   userEmail?: string;
   fuelType: FuelType;

@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AppShell } from "@/components/layout/app-shell";
-import { AuthRequiredCard } from "@/components/auth/auth-required-card";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
 import { FuelStatusCard } from "@/components/stations/fuel-status-card";
@@ -99,17 +98,9 @@ export default async function StationDetailPage({
               ))}
             </div>
           </Card>
-          {isAuthenticated ? (
-            <Card>
-              <ReportForm station={station} />
-            </Card>
-          ) : (
-            <AuthRequiredCard
-              title="Entrar para actualizar esta bomba"
-              body="A leitura do estado é pública, mas novas sinalizações só podem ser feitas por utilizadores autenticados e fisicamente próximos da bomba."
-              nextHref={`/stations/${id}`}
-            />
-          )}
+          <Card>
+            <ReportForm station={station} isAuthenticated={isAuthenticated} />
+          </Card>
         </div>
       </div>
     </AppShell>
