@@ -26,6 +26,12 @@ export async function AppShell({
   return (
     <div className="shell">
       <main className="shell-main">{children}</main>
+      {showAdmin ? (
+        <Link href="/admin" className={`admin-fab ${currentPath === "/admin" ? "is-active" : ""}`}>
+          <Settings size={18} />
+          <span>Admin</span>
+        </Link>
+      ) : null}
       <nav className="bottom-nav" aria-label="Navegação principal">
         {navItems.map(({ href, label, icon: Icon }) => (
           <Link
@@ -37,15 +43,6 @@ export async function AppShell({
             <span>{label}</span>
           </Link>
         ))}
-        {showAdmin ? (
-          <Link
-            href="/admin"
-            className={`bottom-nav-item admin-shortcut ${currentPath === "/admin" ? "is-active" : ""}`}
-          >
-            <Settings size={18} />
-            <span>Admin</span>
-          </Link>
-        ) : null}
       </nav>
     </div>
   );

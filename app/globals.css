@@ -617,6 +617,30 @@ select {
   gap: 8px;
 }
 
+.legend-card details {
+  display: grid;
+  gap: 14px;
+}
+
+.legend-summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.legend-summary::-webkit-details-marker {
+  display: none;
+}
+
+.legend-summary h2,
+.legend-summary p {
+  margin: 0;
+}
+
+.legend-summary p {
+  margin-top: 4px;
+  color: var(--ink-soft);
+}
+
 .stats-grid,
 .metric-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -711,12 +735,32 @@ select {
   bottom: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
   background: rgba(255, 253, 248, 0.96);
   backdrop-filter: blur(12px);
   border-top: 1px solid rgba(215, 204, 181, 0.9);
+}
+
+.admin-fab {
+  position: fixed;
+  right: 14px;
+  bottom: calc(86px + env(safe-area-inset-bottom));
+  z-index: 21;
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(111, 60, 34, 0.96);
+  color: white;
+  box-shadow: 0 18px 30px rgba(36, 32, 28, 0.18);
+}
+
+.admin-fab.is-active {
+  background: var(--accent);
 }
 
 .bottom-nav-item {
@@ -802,5 +846,9 @@ select {
 
   details[open] summary svg {
     transform: rotate(180deg);
+  }
+
+  .bottom-nav-item span {
+    font-size: 0.7rem;
   }
 }
