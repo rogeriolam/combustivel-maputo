@@ -27,8 +27,28 @@ export default async function MapPage({
       <div className="page">
         <PageHeader
           title="Mapa em tempo quase real"
-          subtitle="Mapa principal com foco em Moçambique inteiro. Usa os filtros para encontrar a bomba certa mais depressa."
+          subtitle="Consulta rapidamente onde há combustível e abre o detalhe de cada bomba para ver estado, confiança e histórico recente."
         />
+        <section className="map-overview-card">
+          <div className="map-overview-copy">
+            <span className="overview-kicker">Leitura pública</span>
+            <h2>Vê o mapa primeiro, contribui depois</h2>
+            <p>
+              A comunidade alimenta o estado das bombas. Usa os filtros para afinar a zona e toca numa bomba para ver
+              detalhe, histórico e a última actualização válida.
+            </p>
+          </div>
+          <div className="map-overview-stats">
+            <div className="overview-pill">
+              <strong>{stations.length}</strong>
+              <span>bombas na vista actual</span>
+            </div>
+            <div className="overview-pill">
+              <strong>{filters.province === "all" ? "País" : filters.province}</strong>
+              <span>zona activa</span>
+            </div>
+          </div>
+        </section>
         <form className="search-bar">
           <input
             defaultValue={filters.search}

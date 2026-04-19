@@ -30,11 +30,43 @@ export default async function StationDetailPage({
           subtitle={`${station.neighborhood}, ${station.municipality}, ${station.province}`}
         />
         <div className="stack">
+          <Card className="station-summary-card">
+            <div className="station-summary-grid">
+              <div>
+                <span className="label">Localização</span>
+                <strong>
+                  {station.neighborhood}, {station.municipality}
+                </strong>
+                <p className="microcopy">{station.province}</p>
+              </div>
+              <div>
+                <span className="label">Leitura rápida</span>
+                <strong>
+                  Gasolina: {station.gasoline.status === "available"
+                    ? "Tem"
+                    : station.gasoline.status === "unavailable"
+                      ? "Não tem"
+                      : station.gasoline.status === "conflict"
+                        ? "Em conflito"
+                        : "Sem informação"}
+                </strong>
+                <p className="microcopy">
+                  Diesel: {station.diesel.status === "available"
+                    ? "Tem"
+                    : station.diesel.status === "unavailable"
+                      ? "Não tem"
+                      : station.diesel.status === "conflict"
+                        ? "Em conflito"
+                        : "Sem informação"}
+                </p>
+              </div>
+            </div>
+          </Card>
           <FuelStatusCard aggregate={station.gasoline} />
           <FuelStatusCard aggregate={station.diesel} />
           <Card>
             <div className="section-heading">
-              <h2>Confiança e leitura do estado</h2>
+              <h2>Como ler este estado</h2>
               <p>
                 Tem: maioria recente com pelo menos 60%. Não tem: maioria recente com pelo menos 60%.
                 Em conflito: sinais contraditórios sem maioria. Sem informação: menos de 2 sinais válidos.
@@ -43,7 +75,7 @@ export default async function StationDetailPage({
           </Card>
           <Card>
             <div className="section-heading">
-              <h2>Histórico recente</h2>
+              <h2>Histórico recente da bomba</h2>
               <p>
                 Guardamos utilizador, data e hora de cada sinalização. Apenas as últimas 3 horas influenciam o estado
                 actual.

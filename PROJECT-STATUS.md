@@ -363,6 +363,108 @@ Mensagem observada:
 
 Causa:
 
+- as políticas RLS de `profiles` consultavam a própria tabela `profiles`, o que gerava recursão ao tentar gravar/ler sinalizações ligadas ao utilizador
+
+Solução adoptada:
+
+- correcção manual no Supabase via SQL Editor:
+  - `profiles_select_self` passou a permitir apenas `auth.uid() = id`
+  - `profiles_update_self` passou a permitir apenas `auth.uid() = id`
+- foi criado também o ficheiro local:
+  - `supabase/migrations/2026-04-17-fix-profiles-rls-recursion.sql`
+
+## Sessão de 2026-04-18
+
+### Fase 16: CTA de contribuição na lista de bombas
+
+- em `station-list.tsx` foi adicionado um card de acção no topo da lista:
+  - visitante vê `Quer contribuir?` + botão `Entrar para sinalizar`
+  - autenticado vê `Pronto para contribuir` + instrução para clicar numa bomba
+
+### Fase 17: melhoria do fluxo de login para páginas protegidas
+
+- o login passou a preservar o destino original (`next`)
+- exemplos:
+  - `/stations/new`
+  - `/alerts`
+  - `/stations/[id]`
+- o callback de auth devolve agora ao ecrã protegido correcto após login
+
+### Fase 18: criação e remoção de bomba
+
+- foi testado o registo de uma bomba fictícia com sucesso
+- a área de administração já permite remover uma bomba e o histórico associado
+
+### Fase 19: melhoria do ecrã de sinalização
+
+- removido o dropdown por combustível
+- introduzido fluxo:
+  - seleccionar `Gasolina = Tem/Não tem`
+  - seleccionar `Diesel = Tem/Não tem`
+  - carregar `Guardar actualização`
+- adicionado resumo:
+  - `Por guardar: ...`
+
+### Fase 20: data/hora e auditoria
+
+- o detalhe da bomba passou a mostrar:
+  - utilizador
+  - data/hora
+  - distância
+- o cartão do combustível mostra a última actualização com data/hora exacta
+- o mapa passou a ter tooltip com a última actualização
+
+### Fase 21: foco do mapa na localização actual
+
+- sem província seleccionada, o mapa tenta recentrar pela localização GPS do utilizador
+
+### Fase 22: melhoria visual do estado conflito
+
+- a variável CSS foi ajustada:
+  - `--status-conflict: #c85a00`
+
+### Fase 23: CTA visual em `/map`
+
+- foi adicionado `action-card` com styling próprio
+- o card ajuda a transformar visitantes em contribuidores autenticados
+
+## Commits recentes
+
+- `7321e98` Collapse province filters on mobile
+- `13dd78d` Adjust conflict status color for better contrast
+- `abe65ab` Add contribution call-to-action to station list
+- `586a244` Improve station update flow and map tooltip feedback
+- `3cfec0b` Fix signal save recursion and focus map on current location
+- `5b1bddc` Improve reporting flow and show last update timestamps
+- `a7908ff` Show signal author and timestamp in station history
+- `9b6b9bc` Simplify station reporting actions
+
+## Estado exacto no fim desta sessão
+
+- o `PROJECT-STATUS.md` foi actualizado
+- o utilizador vai fazer pausa e retomar amanhã
+- a app já suporta:
+  - landing pública
+  - mapa público
+  - login opcional
+  - criação real de bomba
+  - sinalização real com GPS
+  - remoção administrativa de bomba
+
+## Ponto de retoma sugerido para amanhã
+
+1. validar no browser se:
+   - o tooltip mostra sempre a última actualização correcta
+   - o mapa foca bem a localização actual ao voltar para `/map`
+   - o fluxo de sinalização está estável após múltiplas actualizações
+2. depois decidir entre:
+   - melhorar UX visual final
+   - ou continuar a robustecer a lógica de alertas/notificações
+
+- `infinite recursion detected in policy for relation "profiles"`
+
+Causa:
+
 - a leitura de `profiles` dentro da leitura das sinalizações entrava em conflito com as políticas RLS
 
 Solução adoptada:

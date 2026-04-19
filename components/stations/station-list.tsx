@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { Station } from "@/lib/domain/types";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/badge";
@@ -33,10 +34,11 @@ export function StationList({
       {stations.map((station) => (
         <Link href={`/stations/${station.id}`} key={station.id}>
           <Card className="station-card">
-            <div className="section-heading">
-              <div>
+            <div className="station-card-top">
+              <div className="station-card-copy">
+                <span className="station-card-label">Bomba</span>
                 <h3>{station.name}</h3>
-                <p>
+                <p className="station-card-location">
                   {station.neighborhood}, {station.municipality}, {station.province}
                 </p>
               </div>
@@ -51,6 +53,12 @@ export function StationList({
                 <span className="label">Diesel</span>
                 <StatusBadge status={station.diesel.status} />
               </div>
+            </div>
+            <div className="station-card-footer">
+              <span className="microcopy">Abrir detalhe para ver histórico e sinalizar.</span>
+              <span className="station-card-link">
+                Ver detalhe <ArrowRight size={16} />
+              </span>
             </div>
           </Card>
         </Link>
