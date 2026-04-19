@@ -79,9 +79,12 @@ export function ReportForm({ station }: { station: Station }) {
 
   return (
     <div className="stack">
-      <div className="section-heading">
-        <h2>Actualizar no local</h2>
-        <p>Escolhe directamente o combustível e o estado a registar. Cada toque guarda só essa opção.</p>
+      <div className="report-header">
+        <div>
+          <h2>Actualizar no local</h2>
+          <p>Escolhe o estado observado agora mesmo nesta bomba.</p>
+        </div>
+        <span className="report-step-pill">2 passos: escolher → guardar</span>
       </div>
       <div className="info-strip">
         <LocateFixed size={16} />
@@ -93,9 +96,16 @@ export function ReportForm({ station }: { station: Station }) {
       <div className="report-grid">
         {(["gasoline", "diesel"] as FuelType[]).map((fuelType) => (
           <div className="report-card" key={fuelType}>
-            <div className="section-heading">
-              <h2>{fuelLabels[fuelType]}</h2>
-              <p>Selecciona o estado observado agora mesmo nesta bomba.</p>
+            <div className="report-card-head">
+              <div>
+                <span className="label">Combustível</span>
+                <h3>{fuelLabels[fuelType]}</h3>
+              </div>
+              <span className="microcopy">
+                {selection[fuelType]
+                  ? `Seleccionado: ${selection[fuelType] === "available" ? "Tem" : "Não tem"}`
+                  : "Sem escolha"}
+              </span>
             </div>
             <div className="report-actions">
               <button
@@ -129,16 +139,21 @@ export function ReportForm({ station }: { station: Station }) {
         ))}
       </div>
       {selectedUpdates.length ? (
-        <div className="info-strip">
-          <span>
-            Por guardar:{" "}
+        <div className="report-review-card">
+          <span className="label">Por guardar</span>
+          <strong>
             {selectedUpdates
               .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
               .join(" · ")}
-          </span>
+          </strong>
         </div>
       ) : null}
-      <button className="primary-button" type="button" disabled={isPending || !selectedUpdates.length} onClick={submitReport}>
+      <button
+        className="primary-button report-save-button"
+        type="button"
+        disabled={isPending || !selectedUpdates.length}
+        onClick={submitReport}
+      >
         <LocateFixed size={18} />
         {isPending ? "A guardar..." : "Guardar actualização"}
       </button>

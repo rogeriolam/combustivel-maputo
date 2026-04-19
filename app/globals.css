@@ -685,10 +685,45 @@ select {
   gap: 14px;
 }
 
+.report-header,
+.report-card-head {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.report-header h2,
+.report-card h3 {
+  margin: 0;
+}
+
+.report-header p,
+.report-card-head .microcopy {
+  margin: 6px 0 0;
+}
+
+.report-step-pill,
+.report-review-card {
+  border-radius: 20px;
+  background: rgba(154, 90, 53, 0.08);
+  border: 1px solid rgba(154, 90, 53, 0.16);
+}
+
+.report-step-pill {
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+  min-height: 38px;
+  padding: 0 12px;
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
 .report-card {
   display: grid;
   gap: 14px;
-  padding: 16px;
+  padding: 18px;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(215, 204, 181, 0.8);
   background: rgba(255, 255, 255, 0.62);
@@ -696,13 +731,34 @@ select {
 
 .report-actions {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.report-choice {
+  min-height: 58px;
+  font-size: 1.05rem;
 }
 
 .report-choice.is-selected {
   background: var(--accent);
   color: white;
   border-color: transparent;
+}
+
+.report-review-card {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+}
+
+.report-review-card strong {
+  font-size: 1.02rem;
+}
+
+.report-save-button {
+  min-height: 58px;
+  font-size: 1.05rem;
 }
 
 .warning-box {
@@ -821,6 +877,12 @@ select {
   .station-summary-card,
   .station-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .report-header,
+  .report-card-head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .station-card-top,
