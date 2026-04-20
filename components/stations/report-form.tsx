@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
 import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
@@ -20,12 +20,49 @@ export function ReportForm({
     gasoline: null,
     diesel: null
   });
+  const [gpsState, setGpsState] = useState<"checking" | "inside" | "outside" | "unsupported" | "error">("checking");
+  const [currentCoords, setCurrentCoords] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isPending, startTransition] = useTransition();
 
   const selectedUpdates = (Object.entries(selection) as Array<[FuelType, SignalOption | null]>)
     .filter((entry): entry is [FuelType, SignalOption] => Boolean(entry[1]))
     .map(([fuelType, option]) => ({ fuelType, option }));
   const isCompleteSelection = selectedUpdates.length === 2;
+  const canSave = isCompleteSelection && gpsState === "inside" && !isPending;
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      setGpsState("unsupported");
+      setFeedback("O browser não suporta geolocalização.");
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const distance = distanceMeters(latitude, longitude, station.latitude, station.longitude);
+        setCurrentCoords({ latitude, longitude });
+
+        if (distance > GPS_RADIUS_METERS) {
+          setGpsState("outside");
+          setFeedback(`Estás a ${Math.round(distance)}m da bomba. É preciso estar até ${GPS_RADIUS_METERS}m.`);
+          return;
+        }
+
+        setGpsState("inside");
+        setFeedback("Localização validada. Já podes guardar a actualização depois de escolher os dois combustíveis.");
+      },
+      () => {
+        setGpsState("error");
+        setFeedback("Não foi possível obter a localização actual.");
+      },
+      {
+        enableHighAccuracy: true,
+        maximumAge: 30_000,
+        timeout: 8_000
+      }
+    );
+  }, [station.latitude, station.longitude]);
 
   async function submitReport() {
     if (!isCompleteSelection) {
@@ -33,68 +70,53 @@ export function ReportForm({
       return;
     }
 
-    if (!navigator.geolocation) {
-      setFeedback("O browser não suporta geolocalização.");
+    if (gpsState !== "inside" || !currentCoords) {
+      setFeedback("Primeiro é preciso validar a tua localização junto da bomba.");
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        const distance = distanceMeters(latitude, longitude, station.latitude, station.longitude);
+    startTransition(async () => {
+      const guestReporterKey =
+        isAuthenticated
+          ? null
+          : (() => {
+              const storageKey = "combustivel-maputo-guest-key";
+              const current = window.localStorage.getItem(storageKey);
+              if (current) return current;
+              const created = crypto.randomUUID();
+              window.localStorage.setItem(storageKey, created);
+              return created;
+            })();
 
-        if (distance > GPS_RADIUS_METERS) {
-          setFeedback(`Estás a ${Math.round(distance)}m da bomba. É preciso estar até ${GPS_RADIUS_METERS}m.`);
-          return;
-        }
+      const response = await fetch("/api/signals", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          stationId: station.id,
+          updates: selectedUpdates,
+          guestReporterKey,
+          userLatitude: currentCoords.latitude,
+          userLongitude: currentCoords.longitude
+        })
+      });
 
-        startTransition(async () => {
-          const guestReporterKey =
-            isAuthenticated
-              ? null
-              : (() => {
-                  const storageKey = "combustivel-maputo-guest-key";
-                  const current = window.localStorage.getItem(storageKey);
-                  if (current) return current;
-                  const created = crypto.randomUUID();
-                  window.localStorage.setItem(storageKey, created);
-                  return created;
-                })();
+      const payload = (await response.json()) as { ok?: boolean; error?: string };
 
-          const response = await fetch("/api/signals", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              stationId: station.id,
-              updates: selectedUpdates,
-              guestReporterKey,
-              userLatitude: latitude,
-              userLongitude: longitude
-            })
-          });
-
-          const payload = (await response.json()) as { ok?: boolean; error?: string };
-
-          if (!response.ok || !payload.ok) {
-            setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
-            return;
-          }
-
-          setFeedback(
-            `Actualização guardada para ${selectedUpdates
-              .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
-              .join(" · ")}. O histórico abaixo deve mostrar a tua actualização com data e hora.`
-          );
-          setSelection({ gasoline: null, diesel: null });
-          router.refresh();
-        });
-      },
-      () => {
-        setFeedback("Não foi possível obter a localização actual.");
+      if (!response.ok || !payload.ok) {
+        setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
+        return;
       }
-    );
+
+      setFeedback(
+        `Actualização guardada para ${selectedUpdates
+          .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
+          .join(" · ")}. O histórico abaixo deve mostrar a tua actualização com data e hora.`
+      );
+      setSelection({ gasoline: null, diesel: null });
+      router.refresh();
+    });
   }
 
   return (
@@ -179,7 +201,7 @@ export function ReportForm({
       <button
         className="primary-button report-save-button"
         type="button"
-        disabled={isPending || !isCompleteSelection}
+        disabled={!canSave}
         onClick={submitReport}
       >
         <LocateFixed size={18} />
