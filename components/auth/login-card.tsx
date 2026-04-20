@@ -42,8 +42,8 @@ export function LoginCard({
         <h2>{compact ? "Entrar ou registar" : "Entrar"}</h2>
         <p>
           {compact
-            ? "Podes continuar como visitante, ou entrar com Google ou e-mail para guardar histórico e contribuir com mais confiança."
-            : "Associamos cada sinalização ao utilizador autenticado para aumentar a confiança dos dados."}
+            ? "Podes continuar como visitante, ou entrar com Google ou e-mail para guardar histórico e criar bombas e alertas."
+            : "Associamos cada sinalização ao utilizador autenticado para guardar histórico e contribuições."}
         </p>
       </div>
       <button className="primary-button" type="button" onClick={() => handleOAuth("google")}>

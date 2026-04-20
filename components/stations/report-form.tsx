@@ -49,6 +49,18 @@ export function ReportForm({
         }
 
         startTransition(async () => {
+          const guestReporterKey =
+            isAuthenticated
+              ? null
+              : (() => {
+                  const storageKey = "combustivel-maputo-guest-key";
+                  const current = window.localStorage.getItem(storageKey);
+                  if (current) return current;
+                  const created = crypto.randomUUID();
+                  window.localStorage.setItem(storageKey, created);
+                  return created;
+                })();
+
           const response = await fetch("/api/signals", {
             method: "POST",
             headers: {
@@ -57,6 +69,7 @@ export function ReportForm({
             body: JSON.stringify({
               stationId: station.id,
               updates: selectedUpdates,
+              guestReporterKey,
               userLatitude: latitude,
               userLongitude: longitude
             })

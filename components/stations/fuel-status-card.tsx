@@ -2,10 +2,18 @@ import { format, formatDistanceToNowStrict } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { FuelAggregate } from "@/lib/domain/types";
 import { fuelLabels } from "@/lib/domain/config";
+import { getParticipationHint } from "@/lib/domain/logic";
 import { Card } from "@/components/ui/card";
-import { ConfidenceBadge, StatusBadge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/badge";
 
 export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
+  const participationLabel =
+    aggregate.recentSignals === 0
+      ? "Sem contribuições recentes"
+      : aggregate.recentSignals === 1
+        ? "1 pessoa recente"
+        : `${aggregate.recentSignals} pessoas recentes`;
+
   return (
     <Card className="fuel-card">
       <div className="fuel-card-header">
@@ -13,7 +21,7 @@ export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
           <p className="eyebrow">{fuelLabels[aggregate.fuelType]}</p>
           <StatusBadge status={aggregate.status} />
         </div>
-        <ConfidenceBadge confidence={aggregate.confidence} />
+        <span className="badge badge-neutral">{participationLabel}</span>
       </div>
       <div className="stats-grid">
         <div>
@@ -26,10 +34,10 @@ export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
         </div>
         <div>
           <strong>{aggregate.recentSignals}</strong>
-          <span>Sinais válidos</span>
+          <span>Pessoas</span>
         </div>
       </div>
-      <p className="muted">{aggregate.explanation}</p>
+      <p className="muted">{getParticipationHint(aggregate)}</p>
       <p className="microcopy">
         Última actualização:{" "}
         {aggregate.lastUpdatedAt

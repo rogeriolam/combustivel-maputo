@@ -99,6 +99,7 @@ export async function getSignalsForStation(stationId: string): Promise<Signal[]>
     id: signal.id,
     stationId: signal.station_id,
     userId: signal.user_id,
+    reporterKey: signal.meta?.reporter_key ?? undefined,
     userName: signal.meta?.reporter_name ?? undefined,
     userEmail: signal.meta?.reporter_email ?? undefined,
     fuelType: signal.fuel_type,

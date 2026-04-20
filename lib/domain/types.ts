@@ -31,6 +31,7 @@ export interface Signal {
   id: string;
   stationId: string;
   userId?: string;
+  reporterKey?: string;
   userName?: string;
   userEmail?: string;
   fuelType: FuelType;

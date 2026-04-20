@@ -27,7 +27,7 @@ export default async function MapPage({
       <div className="page">
         <PageHeader
           title="Mapa em tempo quase real"
-          subtitle="Consulta rapidamente onde há combustível e abre o detalhe de cada bomba para ver estado, confiança e histórico recente."
+          subtitle="Consulta rapidamente onde há combustível e abre o detalhe de cada bomba para ver estado, última actualização e histórico recente."
         />
         <section className="map-overview-card">
           <div className="map-overview-copy">

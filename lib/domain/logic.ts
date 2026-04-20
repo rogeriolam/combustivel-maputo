@@ -31,7 +31,8 @@ export function getLatestSignalsPerUser(signals: Signal[]): Signal[] {
   for (const signal of [...signals].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   )) {
-    const key = `${signal.stationId}:${signal.fuelType}:${signal.userId}`;
+    const reporterIdentity = signal.userId ?? signal.reporterKey ?? `guest:${signal.id}`;
+    const key = `${signal.stationId}:${signal.fuelType}:${reporterIdentity}`;
     if (!map.has(key)) {
       map.set(key, signal);
     }
@@ -71,6 +72,22 @@ export function getStatusExplanation(status: FuelStatus): string {
     default:
       return "Ainda não existem sinalizações recentes suficientes para confiar neste estado.";
   }
+}
+
+export function getParticipationHint(aggregate: FuelAggregate): string {
+  if (aggregate.recentSignals === 0) {
+    return "Ainda ninguém confirmou este combustível nas últimas 3 horas.";
+  }
+
+  if (aggregate.recentSignals < MIN_SIGNALS_FOR_STATUS) {
+    return `Falta mais ${MIN_SIGNALS_FOR_STATUS - aggregate.recentSignals} confirmação recente para mostrar um estado público.`;
+  }
+
+  if (aggregate.status === "conflict") {
+    return "Já existem confirmações suficientes, mas ainda estão em conflito.";
+  }
+
+  return `${aggregate.recentSignals} confirmações recentes estão a sustentar este estado.`;
 }
 
 export function calculateFuelAggregate(

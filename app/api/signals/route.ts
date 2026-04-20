@@ -9,6 +9,7 @@ type CreateSignalBody = {
     fuelType: "gasoline" | "diesel";
     option: "available" | "unavailable";
   }>;
+  guestReporterKey?: string;
   userLatitude?: number;
   userLongitude?: number;
 };
@@ -44,6 +45,7 @@ export async function POST(request: Request) {
 
   const body = (await request.json()) as CreateSignalBody;
   const stationId = body.stationId?.trim();
+  const guestReporterKey = body.guestReporterKey?.trim();
   const userLatitude = Number(body.userLatitude);
   const userLongitude = Number(body.userLongitude);
   const updates =
@@ -71,7 +73,8 @@ export async function POST(request: Request) {
     meta: {
       reporter_name: profile?.full_name ?? "Visitante",
       reporter_email: profile?.email ?? null,
-      reporter_kind: profile ? "authenticated" : "guest"
+      reporter_kind: profile ? "authenticated" : "guest",
+      reporter_key: profile?.id ?? guestReporterKey ?? null
     }
   }));
 

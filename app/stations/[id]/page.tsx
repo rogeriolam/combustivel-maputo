@@ -47,7 +47,7 @@ export default async function StationDetailPage({
                       ? "Não tem"
                       : station.gasoline.status === "conflict"
                         ? "Em conflito"
-                        : "Sem informação"}
+                        : "A aguardar mais sinais"}
                 </strong>
                 <p className="microcopy">
                   Diesel: {station.diesel.status === "available"
@@ -56,7 +56,7 @@ export default async function StationDetailPage({
                       ? "Não tem"
                       : station.diesel.status === "conflict"
                         ? "Em conflito"
-                        : "Sem informação"}
+                        : "A aguardar mais sinais"}
                 </p>
               </div>
             </div>
@@ -65,11 +65,25 @@ export default async function StationDetailPage({
           <FuelStatusCard aggregate={station.diesel} />
           <Card>
             <div className="section-heading">
-              <h2>Como ler este estado</h2>
+              <h2>Como funciona</h2>
               <p>
-                Tem: maioria recente com pelo menos 60%. Não tem: maioria recente com pelo menos 60%.
-                Em conflito: sinais contraditórios sem maioria. Sem informação: menos de 2 sinais válidos.
+                O estado público olha apenas para as últimas 3 horas e usa a observação mais recente de cada pessoa
+                para Gasolina e Diesel.
               </p>
+            </div>
+            <div className="landing-list">
+              <div>
+                <strong>Tem / Não tem</strong>
+                <p>Já existem pessoas recentes suficientes e a maioria aponta para o mesmo resultado.</p>
+              </div>
+              <div>
+                <strong>Em conflito</strong>
+                <p>Já há pessoas suficientes, mas as observações recentes dizem coisas diferentes.</p>
+              </div>
+              <div>
+                <strong>A aguardar mais sinais</strong>
+                <p>Ainda faltam mais observações recentes para mostrar um estado público útil.</p>
+              </div>
             </div>
           </Card>
           <Card>
