@@ -76,18 +76,18 @@ export function getStatusExplanation(status: FuelStatus): string {
 
 export function getParticipationHint(aggregate: FuelAggregate): string {
   if (aggregate.recentSignals === 0) {
-    return "Ainda ninguém confirmou este combustível nas últimas 3 horas.";
+    return "Ainda ninguém sinalizou este combustível nas últimas 3 horas.";
   }
 
   if (aggregate.recentSignals < MIN_SIGNALS_FOR_STATUS) {
-    return `Falta mais ${MIN_SIGNALS_FOR_STATUS - aggregate.recentSignals} confirmação recente para mostrar um estado público.`;
+    return `Falta mais ${MIN_SIGNALS_FOR_STATUS - aggregate.recentSignals} pessoa recente para mostrar um estado público.`;
   }
 
   if (aggregate.status === "conflict") {
-    return "Já existem confirmações suficientes, mas ainda estão em conflito.";
+    return "Já existem pessoas suficientes a sinalizar, mas ainda há conflito nas observações.";
   }
 
-  return `${aggregate.recentSignals} confirmações recentes estão a sustentar este estado.`;
+  return `${aggregate.recentSignals} pessoas recentes estão a sustentar este estado.`;
 }
 
 export function calculateFuelAggregate(

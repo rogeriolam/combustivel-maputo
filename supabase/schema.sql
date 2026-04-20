@@ -174,7 +174,7 @@ for each row
 execute function set_signal_distance_and_validate();
 
 create or replace view latest_signals_per_user as
-select distinct on (station_id, fuel_type, user_id)
+select distinct on (station_id, fuel_type, reporter_identity)
   id,
   station_id,
   user_id,
@@ -183,11 +183,17 @@ select distinct on (station_id, fuel_type, user_id)
   created_at,
   distance_meters,
   gps_validated,
-  reputation_weight
-from signals
+  reputation_weight,
+  reporter_identity
+from (
+  select
+    s.*,
+    coalesce(s.user_id::text, s.meta->>'reporter_key', 'guest:' || s.id::text) as reporter_identity
+  from signals s
+) signals
 where created_at >= now() - interval '3 hours'
   and gps_validated = true
-order by station_id, fuel_type, user_id, created_at desc;
+order by station_id, fuel_type, reporter_identity, created_at desc;
 
 create or replace function calculate_station_fuel_status(
   target_station_id uuid,
