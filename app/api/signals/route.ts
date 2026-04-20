@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
 type CreateSignalBody = {
@@ -89,6 +90,9 @@ export async function POST(request: Request) {
       { status: 400 }
     );
   }
+
+  revalidatePath("/map");
+  revalidatePath(`/stations/${stationId}`);
 
   return NextResponse.json({ ok: true });
 }

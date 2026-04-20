@@ -1,3 +1,4 @@
+import { unstable_noStore as noStore } from "next/cache";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { FilterBar } from "@/components/stations/filter-bar";
@@ -12,6 +13,7 @@ export default async function MapPage({
 }: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  noStore();
   const params = await searchParams;
   const filters: StationFilters = {
     search: typeof params.search === "string" ? params.search : undefined,

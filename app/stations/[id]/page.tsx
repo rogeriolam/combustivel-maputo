@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { unstable_noStore as noStore } from "next/cache";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { AppShell } from "@/components/layout/app-shell";
@@ -13,6 +14,7 @@ export default async function StationDetailPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  noStore();
   const { id } = await params;
   const station = await getStationById(id);
   if (!station) notFound();
