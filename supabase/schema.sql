@@ -321,10 +321,17 @@ create policy "stations_update_admin" on stations
 for update using (exists (select 1 from profiles p where p.id = auth.uid() and p.role = 'admin'));
 
 create policy "signals_read_all" on signals for select using (true);
-create policy "signals_insert_authenticated" on signals
+drop policy if exists "signals_insert_authenticated" on signals;
+drop policy if exists "signals_insert_public" on signals;
+create policy "signals_insert_public" on signals
 for insert with check (
-  auth.uid() = user_id
-  and exists (select 1 from profiles p where p.id = auth.uid() and p.role <> 'blocked')
+  (
+    user_id is null
+  )
+  or (
+    auth.uid() = user_id
+    and exists (select 1 from profiles p where p.id = auth.uid() and p.role <> 'blocked')
+  )
 );
 
 create policy "alerts_select_self" on alerts for select using (auth.uid() = user_id);

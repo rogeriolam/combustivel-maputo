@@ -8,7 +8,6 @@ for insert
 with check (
   (
     user_id is null
-    and gps_validated = false
   )
   or (
     auth.uid() = user_id

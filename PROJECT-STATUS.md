@@ -643,3 +643,57 @@ git add .
 git commit -m "..."
 git push
 ```
+
+## Actualização de 2026-04-19
+
+### O que ficou concluído hoje
+
+- Primeiro sprint de UX/UI no mapa e detalhe da bomba:
+  - bloco introdutório no `/map`
+  - lista de bombas mais legível
+  - resumo rápido no topo do detalhe da bomba
+- Ajuste de paleta visual:
+  - menos verde estrutural
+  - base mais quente (creme / areia / terracota)
+  - verde mantido sobretudo para o estado `Tem`
+- Simplificação da navegação mobile:
+  - `Admin` saiu da bottom nav
+  - `Admin` passou para botão flutuante próprio
+  - legenda do mapa ficou colapsável
+- Simplificação do fluxo de sinalização:
+  - escolher -> rever -> guardar
+  - bloco `Por guardar`
+  - feedback mais claro
+- Alteração estrutural de produto decidida e implementada localmente:
+  - qualquer pessoa pode sinalizar combustível
+  - apenas autenticados podem criar bombas
+  - apenas admin pode remover bombas
+- Migração Supabase aplicada com sucesso para suportar sinalizações anónimas:
+  - ficheiro: `supabase/migrations/2026-04-19-open-anonymous-signals.sql`
+  - nota: no alerta do Supabase, foi necessário usar `Run without RLS` porque o editor interpretou a variável PL/pgSQL `station_geom` como se fosse uma tabela nova
+- Código local já preparado para visitantes sinalizarem no detalhe da bomba sem login
+- `npm run build` passou depois destas alterações
+- `git push` da alteração para permitir sinalizações anónimas já foi feito
+
+### Estado exacto no fim de hoje
+
+- a migração no Supabase já foi executada com sucesso
+- o código já foi enviado
+- o próximo passo não é programar: é testar no browser a nova regra de produto
+
+### Ponto de retoma para amanhã
+
+Testar este fluxo na app publicada:
+
+1. Abrir uma bomba sem login
+2. Fazer uma sinalização como visitante
+3. Confirmar que guarda sem erro
+4. Confirmar que o histórico reflecte a actualização
+5. Confirmar que `/stations/new` continua a exigir login
+6. Confirmar que `/admin` continua reservado ao admin
+
+### Se tudo correr bem amanhã
+
+Próximo passo recomendado:
+- continuar a sprint de UX/UI
+- refinar ainda mais o detalhe da bomba e o feedback visual após guardar

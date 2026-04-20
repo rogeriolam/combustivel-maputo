@@ -25,10 +25,11 @@ export function ReportForm({
   const selectedUpdates = (Object.entries(selection) as Array<[FuelType, SignalOption | null]>)
     .filter((entry): entry is [FuelType, SignalOption] => Boolean(entry[1]))
     .map(([fuelType, option]) => ({ fuelType, option }));
+  const isCompleteSelection = selectedUpdates.length === 2;
 
   async function submitReport() {
-    if (!selectedUpdates.length) {
-      setFeedback("Selecciona pelo menos um combustível antes de guardar.");
+    if (!isCompleteSelection) {
+      setFeedback("Indica obrigatoriamente o estado de Gasolina e Diesel antes de guardar.");
       return;
     }
 
@@ -88,9 +89,9 @@ export function ReportForm({
       <div className="report-header">
         <div>
           <h2>Actualizar no local</h2>
-          <p>Escolhe o estado observado agora mesmo nesta bomba.</p>
+          <p>Indica o estado observado agora mesmo para Gasolina e Diesel.</p>
         </div>
-        <span className="report-step-pill">2 passos: escolher → guardar</span>
+        <span className="report-step-pill">2 combustíveis → 1 gravação</span>
       </div>
       <div className="info-strip">
         <LocateFixed size={16} />
@@ -157,12 +158,15 @@ export function ReportForm({
               .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
               .join(" · ")}
           </strong>
+          {!isCompleteSelection ? (
+            <span className="microcopy">Falta escolher um dos combustíveis antes de guardar.</span>
+          ) : null}
         </div>
       ) : null}
       <button
         className="primary-button report-save-button"
         type="button"
-        disabled={isPending || !selectedUpdates.length}
+        disabled={isPending || !isCompleteSelection}
         onClick={submitReport}
       >
         <LocateFixed size={18} />
