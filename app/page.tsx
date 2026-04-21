@@ -10,7 +10,7 @@ export default async function LandingPage() {
     <main className="landing">
       <section className="hero-shell">
         <div className="hero-topbar">
-          <p className="brand-mark">Combustível Maputo</p>
+          <p className="brand-mark">Combustível Moçambique</p>
           <div className="hero-actions">
             <Link className="ghost-button" href="/map">
               Ver mapa
@@ -42,7 +42,7 @@ export default async function LandingPage() {
             <div className="hero-pill-row">
               <span className="hero-pill">
                 <MapPinned size={16} />
-                {stations.length} bombas no MVP
+                {stations.length} bombas visíveis
               </span>
               <span className="hero-pill">
                 <Fuel size={16} />

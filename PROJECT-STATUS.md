@@ -697,3 +697,49 @@ Testar este fluxo na app publicada:
 Próximo passo recomendado:
 - continuar a sprint de UX/UI
 - refinar ainda mais o detalhe da bomba e o feedback visual após guardar
+
+## Actualização de 2026-04-20
+
+### O que ficou concluído hoje
+
+- Sinalização anónima corrigida no Supabase:
+  - policy `signals_insert_public` ajustada para permitir `user_id = null`
+- Fluxo de sinalização melhorado:
+  - é obrigatório escolher `Gasolina` e `Diesel`
+  - o botão `Guardar actualização` só activa com os dois combustíveis escolhidos
+  - o botão também só activa quando o GPS estiver validado dentro do raio permitido
+- UX do estado da bomba simplificada:
+  - removido o protagonismo de `confiança`
+  - linguagem mais humana com foco em `pessoas`, `conflito`, `última actualização` e `aguardar mais sinais`
+- Visitantes anónimos passam a contar como pessoas distintas:
+  - `guest reporter key` no frontend
+  - cálculo agregado ajustado no Supabase
+  - migração aplicada com sucesso:
+    - `supabase/migrations/2026-04-20-guest-reporter-identity.sql`
+- Correcção de cache após sinalização:
+  - revalidação de `/map` e `/stations/[id]`
+  - leitura fresca no detalhe da bomba e no mapa
+- Build local validado várias vezes com sucesso após as correcções
+
+### Estado exacto no fim de hoje
+
+- o histórico da bomba já reflecte correctamente registos anónimos distintos
+- falta confirmar no browser se o topo do detalhe e o mapa passam a reflectir o agregado actualizado após a revalidação
+- o utilizador pediu que a landing page possa ser opcionalmente ignorada em visitas futuras
+
+### Task registada para o próximo ciclo
+
+- Permitir “não mostrar novamente” na landing page:
+  - guardar preferência local no browser
+  - em visitas futuras abrir directamente `/map`
+  - manter a landing acessível manualmente
+
+### Ponto de retoma recomendado
+
+1. Confirmar no browser se, após o último deploy:
+   - `Gasolina` mostra `Tem` com 2 pessoas recentes no teste de duas janelas anónimas
+   - `Diesel` mostra `Em conflito` com 2 pessoas recentes
+2. Se confirmado:
+   - fechar esta fase de consistência do estado público
+3. Depois:
+   - implementar a opção `Não mostrar novamente` na landing page

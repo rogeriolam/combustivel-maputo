@@ -20,7 +20,7 @@ export function PageHeader({
           </Link>
         ) : null}
         <div>
-          <p className="eyebrow">Combustível Maputo</p>
+          <p className="eyebrow">Combustível Moçambique</p>
           <h1>{title}</h1>
         </div>
       </div>

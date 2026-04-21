@@ -18,7 +18,7 @@ export default async function NewStationPage() {
         />
         <Card>
           <div className="section-heading">
-            <h2>Regras do MVP</h2>
+            <h2>Regras da comunidade</h2>
             <p>
               A nova bomba só deve ser criada se não existir outra a menos de 100m. A mesma validação de proximidade
               aplica-se à primeira sinalização.

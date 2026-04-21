@@ -17,7 +17,7 @@ export default async function ProfilePage() {
           title="Perfil"
           subtitle={
             isAuthenticated
-              ? "Reputação simples no MVP, preparada para ponderação futura das sinalizações."
+              ? "Reputação preparada para ponderação futura das sinalizações."
               : "Podes usar a app como visitante. O login por Google ou e-mail é opcional e útil para histórico, alertas e contribuições associadas à tua conta."
           }
         />

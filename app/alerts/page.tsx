@@ -14,7 +14,7 @@ export default async function AlertsPage() {
       <div className="page">
         <PageHeader
           title="Alertas e notificações"
-          subtitle="Primeira versão do MVP com preferência por browser notifications e fallback para e-mail."
+          subtitle="Recebe alertas quando o combustível que procuras voltar a estar disponível."
         />
         {isAuthenticated ? (
           <>
