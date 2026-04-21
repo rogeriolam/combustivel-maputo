@@ -761,6 +761,16 @@ select {
   font-size: 1.05rem;
 }
 
+.report-save-button:disabled,
+.report-save-button[aria-disabled="true"] {
+  background: rgba(165, 111, 72, 0.34);
+  color: rgba(255, 255, 255, 0.75);
+  border-color: transparent;
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
 .warning-box {
   display: grid;
   gap: 8px;

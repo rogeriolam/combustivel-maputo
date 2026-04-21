@@ -7,6 +7,29 @@ import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
 import { distanceMeters } from "@/lib/domain/logic";
 import { FuelType, SignalOption, Station } from "@/lib/domain/types";
 
+const GUEST_REPORTER_COOKIE = "cm_guest_reporter_key";
+
+function getCookieValue(name: string) {
+  if (typeof document === "undefined") return null;
+  const prefix = `${name}=`;
+  const cookie = document.cookie
+    .split(";")
+    .map((entry) => entry.trim())
+    .find((entry) => entry.startsWith(prefix));
+
+  return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
+}
+
+function ensureGuestReporterKey() {
+  const current = getCookieValue(GUEST_REPORTER_COOKIE);
+  if (current) return current;
+
+  const created = crypto.randomUUID();
+  const oneYear = 60 * 60 * 24 * 365;
+  document.cookie = `${GUEST_REPORTER_COOKIE}=${encodeURIComponent(created)}; Max-Age=${oneYear}; Path=/; SameSite=Lax; Secure`;
+  return created;
+}
+
 export function ReportForm({
   station,
   isAuthenticated
@@ -79,14 +102,7 @@ export function ReportForm({
       const guestReporterKey =
         isAuthenticated
           ? null
-          : (() => {
-              const storageKey = "combustivel-maputo-guest-key";
-              const current = window.localStorage.getItem(storageKey);
-              if (current) return current;
-              const created = crypto.randomUUID();
-              window.localStorage.setItem(storageKey, created);
-              return created;
-            })();
+          : ensureGuestReporterKey();
 
       const response = await fetch("/api/signals", {
         method: "POST",
@@ -202,6 +218,7 @@ export function ReportForm({
         className="primary-button report-save-button"
         type="button"
         disabled={!canSave}
+        aria-disabled={!canSave}
         onClick={submitReport}
       >
         <LocateFixed size={18} />

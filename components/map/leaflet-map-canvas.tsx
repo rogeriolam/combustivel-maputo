@@ -2,12 +2,11 @@
 
 import L from "leaflet";
 import Link from "next/link";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
 import { MAPUTO_CENTER, provinceMapView, statusColors, statusLabels } from "@/lib/domain/config";
 import { Province, Station } from "@/lib/domain/types";
+import { formatMaputoDateTime } from "@/lib/formatting/date";
 
 const defaultIcon = L.divIcon({
   className: "fuel-marker",
@@ -124,15 +123,8 @@ export default function LeafletMapCanvas({
               <span>
                 Última actualização:{" "}
                 {station.gasoline.lastUpdatedAt || station.diesel.lastUpdatedAt
-                  ? format(
-                      new Date(
-                        [station.gasoline.lastUpdatedAt, station.diesel.lastUpdatedAt]
-                          .filter(Boolean)
-                          .sort()
-                          .at(-1) as string
-                      ),
-                      "dd MMM yyyy, HH:mm",
-                      { locale: ptBR }
+                  ? formatMaputoDateTime(
+                      [station.gasoline.lastUpdatedAt, station.diesel.lastUpdatedAt].filter(Boolean).sort().at(-1) as string
                     )
                   : "sem registos"}
               </span>
@@ -151,15 +143,8 @@ export default function LeafletMapCanvas({
                 <span title="Última actualização recente considerada para o estado">
                   Última actualização:{" "}
                   {station.gasoline.lastUpdatedAt || station.diesel.lastUpdatedAt
-                    ? format(
-                        new Date(
-                          [station.gasoline.lastUpdatedAt, station.diesel.lastUpdatedAt]
-                            .filter(Boolean)
-                            .sort()
-                            .at(-1) as string
-                        ),
-                        "dd MMM yyyy, HH:mm",
-                        { locale: ptBR }
+                    ? formatMaputoDateTime(
+                        [station.gasoline.lastUpdatedAt, station.diesel.lastUpdatedAt].filter(Boolean).sort().at(-1) as string
                       )
                     : "sem registos"}
                 </span>

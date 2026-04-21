@@ -1,13 +1,12 @@
 import { notFound } from "next/navigation";
 import { unstable_noStore as noStore } from "next/cache";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
 import { FuelStatusCard } from "@/components/stations/fuel-status-card";
 import { ReportForm } from "@/components/stations/report-form";
 import { getCurrentUserProfile, getSignalsForStation, getStationById } from "@/lib/supabase/repository";
+import { formatMaputoDateTime } from "@/lib/formatting/date";
 
 export default async function StationDetailPage({
   params
@@ -105,8 +104,7 @@ export default async function StationDetailPage({
                       {signal.option === "available" ? "Tem" : "Não tem"}
                     </strong>
                     <span>
-                      {signal.userName ?? signal.userEmail ?? "Utilizador"} ·{" "}
-                      {format(new Date(signal.createdAt), "dd MMM yyyy, HH:mm", { locale: ptBR })} ·{" "}
+                      {signal.userName ?? signal.userEmail ?? "Utilizador"} · {formatMaputoDateTime(signal.createdAt)} ·{" "}
                       {Math.round(signal.distanceMeters)}m
                     </span>
                   </div>

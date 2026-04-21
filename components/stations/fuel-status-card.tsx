@@ -1,10 +1,9 @@
-import { format, formatDistanceToNowStrict } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { FuelAggregate } from "@/lib/domain/types";
 import { fuelLabels } from "@/lib/domain/config";
 import { getParticipationHint } from "@/lib/domain/logic";
 import { Card } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/badge";
+import { formatMaputoDateTime, formatMaputoRelative } from "@/lib/formatting/date";
 
 export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
   const participationLabel =
@@ -41,13 +40,7 @@ export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
       <p className="microcopy">
         Última actualização:{" "}
         {aggregate.lastUpdatedAt
-          ? `${format(new Date(aggregate.lastUpdatedAt), "dd MMM yyyy, HH:mm", { locale: ptBR })} (${formatDistanceToNowStrict(
-              new Date(aggregate.lastUpdatedAt),
-              {
-                addSuffix: true,
-                locale: ptBR
-              }
-            )})`
+          ? `${formatMaputoDateTime(aggregate.lastUpdatedAt)} (${formatMaputoRelative(aggregate.lastUpdatedAt)})`
           : "sem registos recentes"}
       </p>
     </Card>
