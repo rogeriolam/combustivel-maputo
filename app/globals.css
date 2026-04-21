@@ -104,6 +104,10 @@ select {
   flex-wrap: wrap;
 }
 
+.hero-skip-form {
+  margin-top: 8px;
+}
+
 .ghost-button {
   min-height: 50px;
   padding: 0 18px;

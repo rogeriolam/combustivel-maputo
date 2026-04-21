@@ -2,7 +2,7 @@
 
 ## Resumo rápido
 
-Projecto: `Combustível Maputo`
+Projecto: `Combustível Moçambique`
 
 URL pública actual:
 
@@ -21,14 +21,16 @@ Estado actual:
 
 ## Objectivo do produto
 
-App web mobile-first para Maputo e Matola que ajuda a comunidade a perceber quais bombas têm Gasolina ou Diesel, num contexto de escassez de combustível em Moçambique.
+App web mobile-first para Moçambique que ajuda a comunidade a perceber quais bombas têm Gasolina ou Diesel, num contexto de escassez de combustível.
 
-Princípio de produto assumido:
+Princípios de produto assumidos:
 
 - leitura do mapa é pública
 - login é opcional
 - a app só é útil se a comunidade a alimentar com informação real
-- contribuições mais sensíveis devem exigir autenticação
+- qualquer pessoa pode sinalizar combustível
+- só utilizadores autenticados podem criar bombas
+- só administradores podem remover bombas
 
 ## Stack usada
 
@@ -98,6 +100,68 @@ Motivo:
 - evitar descobrir erros só na Vercel
 - reduzir tentativas falhadas de deploy
 
+### 4. Estado público calculado por observações recentes
+
+Decisão:
+
+- o estado público é calculado separadamente para `Gasolina` e `Diesel`
+- conta apenas a observação mais recente de cada pessoa nas últimas `3 horas`
+- os estados públicos são:
+  - `Tem`
+  - `Não tem`
+  - `Em conflito`
+  - `A aguardar mais sinais`
+
+Motivo:
+
+- evitar que a mesma pessoa “vote” várias vezes seguidas
+- tratar observações contraditórias de forma explícita
+- manter a interface compreensível
+
+Critério do MVP:
+
+- menos de `2 pessoas recentes`:
+  - `A aguardar mais sinais`
+- pelo menos `2 pessoas recentes` e maioria simples:
+  - `Tem` ou `Não tem`
+- pelo menos `2 pessoas recentes` e sem maioria:
+  - `Em conflito`
+
+### 5. Identidade anónima por browser
+
+Decisão:
+
+- visitantes anónimos contam como pessoas distintas
+- a identidade anónima passou a ser guardada numa cookie:
+  - `cm_guest_reporter_key`
+
+Motivo:
+
+- permitir sinalização anónima útil, à semelhança de apps tipo Waze
+- evitar que todos os anónimos colapsem numa só “pessoa”
+
+Nota importante:
+
+- duas janelas do mesmo browser privado podem não ser um bom teste
+- o teste válido foi feito com `Safari Private` e `Chrome Incognito`
+
+### 6. Linguagem de confiança retirada da UI principal
+
+Decisão:
+
+- a palavra `confiança` deixou de ser protagonista no ecrã da bomba
+- a interface passou a falar em:
+  - `pessoas recentes`
+  - `última actualização`
+  - `Em conflito`
+  - `A aguardar mais sinais`
+
+Motivo:
+
+- o conceito técnico tinha mérito, mas gerava ruído
+- desencorajava contribuições e ocupava espaço de ecrã
+- o utilizador percebe melhor linguagem baseada em pessoas e observações
+
 ## Passos percorridos
 
 ### Fase 1: criação do projecto
@@ -148,6 +212,40 @@ Motivo:
 - a homepage deixou de ser o mapa
 - passou a ser uma landing page com hero
 - o mapa público foi movido para `/map`
+
+### Fase 7: nacionalização da app
+
+- a app deixou de estar posicionada apenas para Maputo/Matola
+- o frontend e o schema passaram a suportar `província` e `município`
+- os textos visíveis deixaram de sugerir uso apenas em Maputo
+
+### Fase 8: contribuição real e administração
+
+- criação de bombas ligada ao Supabase
+- sinalização ligada ao Supabase
+- remoção de bomba disponível no admin
+- validação por proximidade GPS no acto de sinalizar
+
+### Fase 9: abertura da sinalização anónima
+
+- visitantes passaram a poder sinalizar combustível
+- criação de bomba continuou a exigir login
+- remoção de bomba continuou exclusiva do admin
+
+### Fase 10: correcção da agregação anónima
+
+- histórico e estado público foram reconciliados
+- o backend passou a contar pessoas anónimas distintas
+- o teste final validou:
+  - `Gasolina = Tem` com `2 pessoas recentes`
+  - `Diesel = Em conflito` com `2 pessoas recentes`
+
+### Fase 11: hora local e UX do botão de guardar
+
+- datas e horas passaram a ser apresentadas em `Africa/Maputo`
+- botão `Guardar actualização` só fica visualmente activo quando:
+  - os dois combustíveis foram escolhidos
+  - o GPS está dentro do raio aceite
 
 ## Erros encontrados e soluções adoptadas
 
@@ -217,6 +315,107 @@ Solução:
 
 - mover o callback de autenticação para `route.ts`
 - concluir o `exchangeCodeForSession` no servidor
+
+### 6. Política RLS em `profiles` com recursão infinita
+
+Problema:
+
+- ao guardar sinalizações aparecia:
+  - `infinite recursion detected in policy for relation "profiles"`
+
+Solução:
+
+- simplificar as policies de `profiles`
+- usar apenas `auth.uid() = id` nas policies self-service
+
+### 7. Sinalização anónima bloqueada por policy
+
+Problema:
+
+- anónimos recebiam erro de `row-level security policy` em `signals`
+
+Solução:
+
+- ajustar a policy `signals_insert_public`
+- permitir insert com `user_id is null` para visitantes
+
+### 8. Estado público não reflectia 2 browsers anónimos
+
+Problema:
+
+- o histórico mostrava registos distintos
+- mas o topo da bomba continuava com `1 pessoa recente`
+
+Causa real encontrada:
+
+- os registos estavam a entrar com o mesmo `reporter_key`
+
+Diagnóstico:
+
+- foi validado por SQL em `signals`
+- foi validado por SQL em `latest_signals_per_user`
+
+Solução:
+
+- abandonar `localStorage` para identidade anónima
+- passar a usar cookie `cm_guest_reporter_key`
+- depois do deploy, o teste com `Safari Private` + `Chrome Incognito` mostrou `reporter_key` distintos
+
+Resultado validado:
+
+- `Gasolina` passou a `Tem` com `2 pessoas recentes`
+- `Diesel` passou a `Em conflito` com `2 pessoas recentes`
+
+### 9. Hora apresentada em UTC
+
+Problema:
+
+- a app mostrava horas fora do fuso local
+
+Solução:
+
+- formatação explícita para `Africa/Maputo`
+- aplicada no detalhe da bomba, histórico e tooltip do mapa
+
+## Estado funcional actual
+
+- landing pública em `/`
+- mapa público em `/map`
+- perfil/admin funcionais
+- login Google funcional
+- sinalização anónima funcional
+- criação de bomba autenticada funcional
+- remoção por admin funcional
+- agregação por pessoa recente funcional
+- hora local de Maputo funcional
+
+## Ponto de retoma recomendado
+
+Próximo passo funcional:
+
+- ajustar a experiência da landing opcional após validação em produção
+
+Comportamento pretendido:
+
+- o utilizador pode optar por não voltar a ver a landing nas visitas seguintes
+- quando isso acontecer, a app deve abrir directamente em `/map`
+- a landing continua acessível manualmente
+
+## Funcionalidade adicional preparada
+
+### Landing opcional
+
+Decisão:
+
+- a landing ganhou opção `Não mostrar novamente`
+- a preferência é guardada server-side em cookie:
+  - `cm_skip_landing`
+
+Comportamento:
+
+- futuras visitas a `/` redireccionam para `/map`
+- a landing continua acessível manualmente em:
+  - `/?landing=1`
 
 ### 6. Confusão entre login Vercel e login da app
 

@@ -1,10 +1,41 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { ArrowRight, Fuel, MapPinned, ShieldCheck, Users } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { getCurrentUserProfile, getStations } from "@/lib/supabase/repository";
 
-export default async function LandingPage() {
+const SKIP_LANDING_COOKIE = "cm_skip_landing";
+
+type LandingPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function LandingPage({ searchParams }: LandingPageProps) {
+  const resolvedSearchParams = (await searchParams) ?? {};
+  const forceLanding = resolvedSearchParams.landing === "1";
+  const cookieStore = await cookies();
+
+  if (!forceLanding && cookieStore.get(SKIP_LANDING_COOKIE)?.value === "1") {
+    redirect("/map");
+  }
+
   const [profile, stations] = await Promise.all([getCurrentUserProfile(), getStations()]);
+
+  async function skipLandingAction() {
+    "use server";
+
+    const actionCookies = await cookies();
+    actionCookies.set(SKIP_LANDING_COOKIE, "1", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: true,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 365
+    });
+
+    redirect("/map");
+  }
 
   return (
     <main className="landing">
@@ -39,6 +70,11 @@ export default async function LandingPage() {
                 Entrar para contribuir
               </Link>
             </div>
+            <form action={skipLandingAction} className="hero-skip-form">
+              <button className="ghost-button" type="submit">
+                Não mostrar novamente
+              </button>
+            </form>
             <div className="hero-pill-row">
               <span className="hero-pill">
                 <MapPinned size={16} />
