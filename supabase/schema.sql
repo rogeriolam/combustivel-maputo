@@ -173,7 +173,8 @@ before insert on signals
 for each row
 execute function set_signal_distance_and_validate();
 
-create or replace view latest_signals_per_user as
+create or replace view latest_signals_per_user
+with (security_invoker = true) as
 select distinct on (station_id, fuel_type, reporter_identity)
   id,
   station_id,
@@ -268,7 +269,8 @@ select
 from resolved;
 $$;
 
-create or replace view stations_with_current_status as
+create or replace view stations_with_current_status
+with (security_invoker = true) as
 select
   s.id,
   s.name,

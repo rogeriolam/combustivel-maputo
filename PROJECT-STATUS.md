@@ -377,6 +377,30 @@ Solução:
 - formatação explícita para `Africa/Maputo`
 - aplicada no detalhe da bomba, histórico e tooltip do mapa
 
+### 10. Alertas de segurança do Supabase para views
+
+Problema:
+
+- o linter do Supabase assinalou:
+  - `public.latest_signals_per_user`
+  - `public.stations_with_current_status`
+- ambos apareciam como `security definer view`
+
+Decisão:
+
+- recriar as views com:
+  - `with (security_invoker = true)`
+
+Motivo:
+
+- as views devem respeitar permissões do utilizador que consulta
+- não precisam de privilégios do criador da view
+
+Nota:
+
+- o alerta sobre `public.spatial_ref_sys` foi mantido sem alteração
+- é tabela do PostGIS/extensão e não é prioridade mexer nela neste projecto
+
 ## Estado funcional actual
 
 - landing pública em `/`
@@ -416,6 +440,14 @@ Comportamento:
 - futuras visitas a `/` redireccionam para `/map`
 - a landing continua acessível manualmente em:
   - `/?landing=1`
+
+## Estado funcional validado em browser
+
+- `Safari Private` + `Chrome Incognito` validaram identidades anónimas distintas
+- o estado público passou a reflectir correctamente:
+  - `Gasolina = Tem`
+  - `Diesel = Em conflito`
+- o histórico, o detalhe e o mapa estão coerentes com os dados recentes
 
 ### 6. Confusão entre login Vercel e login da app
 

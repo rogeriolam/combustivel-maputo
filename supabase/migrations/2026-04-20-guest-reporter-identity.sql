@@ -1,4 +1,5 @@
-create or replace view public.latest_signals_per_user as
+create or replace view public.latest_signals_per_user
+with (security_invoker = true) as
 select distinct on (station_id, fuel_type, reporter_identity)
   id,
   station_id,

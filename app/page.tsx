@@ -22,21 +22,6 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
 
   const [profile, stations] = await Promise.all([getCurrentUserProfile(), getStations()]);
 
-  async function skipLandingAction() {
-    "use server";
-
-    const actionCookies = await cookies();
-    actionCookies.set(SKIP_LANDING_COOKIE, "1", {
-      httpOnly: true,
-      sameSite: "lax",
-      secure: true,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 365
-    });
-
-    redirect("/map");
-  }
-
   return (
     <main className="landing">
       <section className="hero-shell">
@@ -70,7 +55,7 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
                 Entrar para contribuir
               </Link>
             </div>
-            <form action={skipLandingAction} className="hero-skip-form">
+            <form action="/api/preferences/skip-landing" className="hero-skip-form" method="post">
               <button className="ghost-button" type="submit">
                 Não mostrar novamente
               </button>
