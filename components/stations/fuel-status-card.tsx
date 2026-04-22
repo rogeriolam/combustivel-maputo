@@ -36,8 +36,8 @@ export function FuelStatusCard({ aggregate }: { aggregate: FuelAggregate }) {
           <span>Pessoas</span>
         </div>
       </div>
-      <p className="muted">{getParticipationHint(aggregate)}</p>
-      <p className="microcopy">
+      <p className="muted fuel-card-summary">{getParticipationHint(aggregate)}</p>
+      <p className="microcopy fuel-card-updated">
         Última actualização:{" "}
         {aggregate.lastUpdatedAt
           ? `${formatMaputoDateTime(aggregate.lastUpdatedAt)} (${formatMaputoRelative(aggregate.lastUpdatedAt)})`

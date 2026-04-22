@@ -31,24 +31,20 @@ export default async function MapPage({
           title="Mapa em tempo quase real"
           subtitle="Consulta rapidamente onde há combustível e abre o detalhe de cada bomba para ver estado, última actualização e histórico recente."
         />
-        <section className="map-overview-card">
-          <div className="map-overview-copy">
+        <section className="map-strip">
+          <div className="map-strip-copy">
             <span className="overview-kicker">Leitura pública</span>
-            <h2>Vê o mapa primeiro, contribui depois</h2>
-            <p>
-              A comunidade alimenta o estado das bombas. Usa os filtros para afinar a zona e toca numa bomba para ver
-              detalhe, histórico e a última actualização válida.
-            </p>
+            <p>Usa os filtros e toca numa bomba para ver estado, histórico e última actualização.</p>
           </div>
-          <div className="map-overview-stats">
-            <div className="overview-pill">
+          <div className="map-strip-stats">
+            <span className="overview-pill compact-pill">
               <strong>{stations.length}</strong>
-              <span>bombas na vista actual</span>
-            </div>
-            <div className="overview-pill">
+              <span>bombas</span>
+            </span>
+            <span className="overview-pill compact-pill">
               <strong>{filters.province === "all" ? "País" : filters.province}</strong>
-              <span>zona activa</span>
-            </div>
+              <span>zona</span>
+            </span>
           </div>
         </section>
         <form className="search-bar">
@@ -65,13 +61,7 @@ export default async function MapPage({
         <FilterBar filters={filters} />
         <MapView stations={stations} filters={filters} />
         <MapLegend />
-        <section className="stack">
-          <div className="section-heading">
-            <h2>Bombas no mapa</h2>
-            <p>{stations.length} resultados na vista actual.</p>
-          </div>
-          <StationList stations={stations} isAuthenticated={Boolean(profile)} />
-        </section>
+        <StationList stations={stations} isAuthenticated={Boolean(profile)} />
       </div>
     </AppShell>
   );

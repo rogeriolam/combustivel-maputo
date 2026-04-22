@@ -140,15 +140,14 @@ export function ReportForm({
       <div className="report-header">
         <div>
           <h2>Actualizar no local</h2>
-          <p>Indica o estado observado agora mesmo para Gasolina e Diesel.</p>
+          <p>Escolhe o estado observado agora mesmo.</p>
         </div>
         <span className="report-step-pill">2 combustíveis → 1 gravação</span>
       </div>
       <div className="info-strip">
         <LocateFixed size={16} />
         <span>
-          Cada registo guarda utilizador, data e hora. O estado público segue a regra das últimas 3 horas e precisa de
-          pelo menos 2 sinais válidos.
+          Cada registo guarda utilizador, data e hora. O estado público usa pessoas recentes nas últimas 3 horas.
         </span>
       </div>
       <p className="microcopy">

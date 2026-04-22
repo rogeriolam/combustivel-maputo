@@ -17,7 +17,7 @@ export function StationList({
         <Card className="action-card">
           <div className="section-heading">
             <h3>Quer contribuir?</h3>
-            <p>Podes sinalizar o combustível que viste junto de uma bomba, mesmo como visitante.</p>
+            <p>Sinaliza o que viste numa bomba. Entrar só é preciso para criar bombas e alertas.</p>
           </div>
           <Link href="/auth" className="primary-button">
             Entrar para criar bombas e alertas
@@ -27,7 +27,7 @@ export function StationList({
         <Card className="action-card">
           <div className="section-heading">
             <h3>Pronto para contribuir</h3>
-            <p>Clica numa bomba abaixo para sinalizar combustível.</p>
+            <p>Toca numa bomba abaixo para sinalizar rapidamente.</p>
           </div>
         </Card>
       )}

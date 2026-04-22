@@ -330,6 +330,44 @@ select {
   margin-bottom: 14px;
 }
 
+.map-strip {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 16px 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(215, 204, 181, 0.82);
+  background: rgba(255, 250, 243, 0.84);
+  box-shadow: var(--shadow);
+}
+
+.map-strip-copy,
+.map-strip-stats {
+  display: grid;
+  gap: 8px;
+}
+
+.map-strip-copy p {
+  margin: 0;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+.compact-pill {
+  gap: 2px;
+  min-height: 72px;
+  padding: 12px 14px;
+}
+
+.compact-pill strong {
+  font-size: 1rem;
+}
+
+.compact-pill span {
+  font-size: 0.9rem;
+}
+
 .map-overview-copy,
 .map-overview-stats,
 .station-summary-grid,
@@ -395,6 +433,14 @@ select {
 .section-heading p {
   margin: 4px 0 0;
   max-width: 48ch;
+}
+
+.compact-heading h2 {
+  font-size: clamp(1.35rem, 4vw, 1.8rem);
+}
+
+.compact-heading p {
+  max-width: 36ch;
 }
 
 .search-bar,
@@ -526,6 +572,10 @@ select {
   margin-bottom: 14px;
 }
 
+.map-frame {
+  height: 400px;
+}
+
 .map-fallback {
   display: grid;
   place-items: center;
@@ -536,8 +586,19 @@ select {
 
 .popup-content {
   display: grid;
-  gap: 6px;
+  gap: 4px;
   min-width: 180px;
+  max-width: 240px;
+}
+
+.popup-content strong {
+  font-size: 1rem;
+}
+
+.popup-content a {
+  margin-top: 2px;
+  color: var(--accent-strong);
+  font-weight: 700;
 }
 
 .fuel-marker {
@@ -586,6 +647,15 @@ select {
 .station-card-footer {
   padding-top: 8px;
   border-top: 1px solid rgba(215, 204, 181, 0.72);
+}
+
+.station-action-card,
+.history-card {
+  gap: 12px;
+}
+
+.history-card .history-list {
+  gap: 0;
 }
 
 .station-card-link {
@@ -785,7 +855,7 @@ select {
 }
 
 .history-row {
-  padding: 14px 0;
+  padding: 12px 0;
   border-bottom: 1px solid rgba(215, 204, 181, 0.7);
 }
 
@@ -796,6 +866,16 @@ select {
 
 .station-summary-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.fuel-card-summary {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  max-width: 44ch;
+}
+
+.fuel-card-updated {
+  font-size: 0.98rem;
 }
 
 .bottom-nav {
@@ -866,6 +946,16 @@ select {
     align-items: end;
   }
 
+  .map-strip {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+  }
+
+  .map-strip-stats {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(120px, 1fr);
+  }
+
   .search-bar {
     grid-template-columns: 1fr auto;
   }
@@ -891,6 +981,10 @@ select {
   .station-summary-card,
   .station-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .map-strip-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .report-header,

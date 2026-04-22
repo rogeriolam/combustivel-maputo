@@ -62,41 +62,22 @@ export default async function StationDetailPage({
               </div>
             </div>
           </Card>
+          <Card className="station-action-card">
+            <div className="section-heading compact-heading">
+              <h2>Sinalizar agora</h2>
+              <p>Indica o que viste nesta bomba para Gasolina e Diesel.</p>
+            </div>
+            <ReportForm station={station} isAuthenticated={isAuthenticated} />
+          </Card>
           <FuelStatusCard aggregate={station.gasoline} />
           <FuelStatusCard aggregate={station.diesel} />
-          <Card>
-            <div className="section-heading">
-              <h2>Como funciona</h2>
-              <p>
-                O estado público olha apenas para as últimas 3 horas e usa a observação mais recente de cada pessoa
-                para Gasolina e Diesel.
-              </p>
-            </div>
-            <div className="landing-list">
-              <div>
-                <strong>Tem / Não tem</strong>
-                <p>Já existem pessoas recentes suficientes e a maioria aponta para o mesmo resultado.</p>
-              </div>
-              <div>
-                <strong>Em conflito</strong>
-                <p>Já há pessoas suficientes, mas as observações recentes dizem coisas diferentes.</p>
-              </div>
-              <div>
-                <strong>A aguardar mais sinais</strong>
-                <p>Ainda faltam mais observações recentes para mostrar um estado público útil.</p>
-              </div>
-            </div>
-          </Card>
-          <Card>
-            <div className="section-heading">
-              <h2>Histórico recente da bomba</h2>
-              <p>
-                Guardamos utilizador, data e hora de cada sinalização. Apenas as últimas 3 horas influenciam o estado
-                actual.
-              </p>
+          <Card className="history-card">
+            <div className="section-heading compact-heading">
+              <h2>Histórico recente</h2>
+              <p>As últimas 3 horas influenciam o estado actual.</p>
             </div>
             <div className="history-list">
-              {signals.map((signal) => (
+              {signals.slice(0, 8).map((signal) => (
                 <div className="history-row" key={signal.id}>
                   <div>
                     <strong>
@@ -111,9 +92,9 @@ export default async function StationDetailPage({
                 </div>
               ))}
             </div>
-          </Card>
-          <Card>
-            <ReportForm station={station} isAuthenticated={isAuthenticated} />
+            {signals.length > 8 ? (
+              <p className="microcopy">Mostramos as 8 observações mais recentes nesta bomba.</p>
+            ) : null}
           </Card>
         </div>
       </div>

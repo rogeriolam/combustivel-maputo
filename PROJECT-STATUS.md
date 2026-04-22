@@ -247,6 +247,15 @@ Motivo:
   - os dois combustíveis foram escolhidos
   - o GPS está dentro do raio aceite
 
+### Fase 12: validação final da agregação e simplificação visual
+
+- foi validado no browser, com `Safari Private` e `Chrome Incognito`, que visitantes contam como pessoas distintas
+- o teste real confirmou:
+  - `Gasolina = Tem` com `2 pessoas recentes`
+  - `Diesel = Em conflito` com `2 pessoas recentes`
+- o tooltip do mapa e o detalhe da bomba deixaram de contradizer o histórico recente
+- iniciou-se uma sprint dedicada a simplificar o mapa e o detalhe da bomba, reduzindo ruído textual e densidade visual
+
 ## Erros encontrados e soluções adoptadas
 
 ### 1. Erros de typed routes no build da Vercel
