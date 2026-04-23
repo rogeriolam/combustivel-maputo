@@ -983,3 +983,71 @@ Próximo passo recomendado:
    - fechar esta fase de consistência do estado público
 3. Depois:
    - implementar a opção `Não mostrar novamente` na landing page
+
+## Actualização de 2026-04-22
+
+### O que ficou concluído hoje
+
+- Rotação de segurança concluída para `SUPABASE_SERVICE_ROLE_KEY`:
+  - nova chave gerada no Supabase
+  - variável actualizada na Vercel
+  - `.env.local` actualizado
+  - chave antiga revogada
+- Cópia do produto alinhada com rollout nacional:
+  - removidas referências visíveis a `MVP`
+  - removida a ideia de que a app serve apenas Maputo
+  - branding visível actualizado para `Combustível Moçambique`
+- Alertas relevantes do Supabase resolvidos:
+  - views `public.latest_signals_per_user`
+  - `public.stations_with_current_status`
+  - recriadas com `security_invoker = true`
+  - alerta de `spatial_ref_sys` mantido de propósito por ser tabela da extensão PostGIS
+- Validação completa da lógica social da app:
+  - teste real com `Safari Private` + `Chrome Incognito`
+  - `Gasolina = Tem` com `2 pessoas recentes`
+  - `Diesel = Em conflito` com `2 pessoas recentes`
+  - histórico, leitura rápida e estado agregado ficaram coerentes
+- Hora local corrigida para `Africa/Maputo`
+- Botão `Guardar actualização`:
+  - visualmente desactivado quando não pode gravar
+  - activo apenas com GPS válido e dois combustíveis escolhidos
+- Sprint visual concluída:
+  - detalhe da bomba simplificado
+  - mapa e popup mais leves
+  - histórico menos dominante
+- Tentativa de “não mostrar novamente” na landing:
+  - funcionalidade implementada e revista
+  - comportamento inconsistente entre browsers
+  - decisão: retirar da frente e tratar mais tarde, sem bloquear o produto
+- Próximo sprint iniciado no código:
+  - feedback visual pós-acção com toast reutilizável
+  - componentes criados:
+    - `components/ui/toast.tsx`
+    - `components/ui/page-toast.tsx`
+  - integração feita em:
+    - `components/stations/report-form.tsx`
+    - `components/stations/new-station-form.tsx`
+    - `app/stations/[id]/page.tsx`
+  - estilos adicionados em `app/globals.css`
+  - `npm run build` passou
+
+### Estado exacto no fim de hoje
+
+- A parte mais crítica do modelo de dados e agregação está estabilizada e validada no browser
+- O próximo foco deixou de ser backend/regra de negócio e passa a ser experiência:
+  - feedback visual claro ao sinalizar
+  - feedback visual claro ao adicionar bomba
+- O código do toast já está implementado localmente e com build validado
+- Falta apenas publicar e testar esse sprint no browser
+
+### Ponto de retoma para amanhã
+
+1. Publicar o sprint de toast:
+   - commit sugerido: `Add reusable success and error toasts`
+2. Testar no browser:
+   - sinalizar numa bomba e confirmar toast verde
+   - adicionar uma bomba e confirmar toast no detalhe da bomba criada
+   - provocar erro e confirmar toast de erro
+3. Se isso estiver bem:
+   - continuar a sprint de UX/UI
+   - próximo tema estrutural: preparar o mapa para escalar melhor quando houver muitas bombas

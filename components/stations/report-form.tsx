@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { LocateFixed } from "lucide-react";
+import { Toast, ToastType } from "@/components/ui/toast";
 import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
 import { distanceMeters } from "@/lib/domain/logic";
 import { FuelType, SignalOption, Station } from "@/lib/domain/types";
@@ -46,6 +47,7 @@ export function ReportForm({
   const [gpsState, setGpsState] = useState<"checking" | "inside" | "outside" | "unsupported" | "error">("checking");
   const [currentCoords, setCurrentCoords] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isPending, startTransition] = useTransition();
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
   const selectedUpdates = (Object.entries(selection) as Array<[FuelType, SignalOption | null]>)
     .filter((entry): entry is [FuelType, SignalOption] => Boolean(entry[1]))
@@ -122,14 +124,12 @@ export function ReportForm({
 
       if (!response.ok || !payload.ok) {
         setFeedback(payload.error ?? "Não foi possível guardar a sinalização.");
+        setToast({ message: payload.error ?? "Não foi possível guardar a sinalização.", type: "error" });
         return;
       }
 
-      setFeedback(
-        `Actualização guardada para ${selectedUpdates
-          .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
-          .join(" · ")}. O histórico abaixo deve mostrar a tua actualização com data e hora.`
-      );
+      setFeedback("Sinalização guardada. O histórico e o estado da bomba foram actualizados.");
+      setToast({ message: "✓ Sinalização registada! Obrigado.", type: "success" });
       setSelection({ gasoline: null, diesel: null });
       router.refresh();
     });
@@ -137,6 +137,7 @@ export function ReportForm({
 
   return (
     <div className="stack">
+      {toast ? <Toast message={toast.message} type={toast.type} onDone={() => setToast(null)} /> : null}
       <div className="report-header">
         <div>
           <h2>Actualizar no local</h2>

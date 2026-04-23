@@ -2,6 +2,7 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { queuePendingToast } from "@/components/ui/page-toast";
 import { GPS_RADIUS_METERS, provinceOptions } from "@/lib/domain/config";
 import { getDuplicateCandidates } from "@/lib/domain/logic";
 import { Province, Station } from "@/lib/domain/types";
@@ -92,6 +93,10 @@ export function NewStationForm({ stations }: { stations: Station[] }) {
           return;
         }
 
+        queuePendingToast({
+          message: "✓ Bomba adicionada! Agora outros podem sinalizar aqui.",
+          type: "success"
+        });
         setStatusMessage("Bomba publicada com sucesso. A abrir detalhe...");
         router.push(`/stations/${payload.stationId}`);
         router.refresh();

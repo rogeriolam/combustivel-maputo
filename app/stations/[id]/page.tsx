@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from "next/cache";
 import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
+import { PageToast } from "@/components/ui/page-toast";
 import { FuelStatusCard } from "@/components/stations/fuel-status-card";
 import { ReportForm } from "@/components/stations/report-form";
 import { getCurrentUserProfile, getSignalsForStation, getStationById } from "@/lib/supabase/repository";
@@ -24,6 +25,7 @@ export default async function StationDetailPage({
   return (
     <AppShell currentPath="/map">
       <div className="page">
+        <PageToast />
         <PageHeader
           backHref="/map"
           title={station.name}

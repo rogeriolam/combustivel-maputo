@@ -38,6 +38,67 @@ body {
   font-family: var(--font-body);
 }
 
+.toast-root {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  width: min(calc(100vw - 32px), 560px);
+  pointer-events: none;
+}
+
+.toast-banner {
+  border-radius: 16px;
+  padding: 14px 18px;
+  box-shadow: 0 20px 40px rgba(36, 32, 28, 0.18);
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.toast-banner.is-visible {
+  animation: toast-fade-in 200ms ease-out forwards;
+}
+
+.toast-banner.is-leaving {
+  animation: toast-fade-out 300ms ease-in forwards;
+}
+
+.toast-success {
+  background: linear-gradient(135deg, #2f7a4e, #256341);
+}
+
+.toast-error {
+  background: linear-gradient(135deg, #b53a30, #922f27);
+}
+
+@keyframes toast-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
 a {
   color: inherit;
   text-decoration: none;
