@@ -422,33 +422,87 @@ Nota:
 - agregação por pessoa recente funcional
 - hora local de Maputo funcional
 
+## Decisões visuais e de UX mais recentes
+
+### 1. Minimalismo editorial como direcção visual
+
+Decisão:
+
+- a app vai evoluir para um visual minimalista e editorial
+- a paleta alvo passa a ser:
+  - preto
+  - branco
+  - cinzas
+- os estados do combustível mantêm apenas cor semântica mínima
+
+Motivo:
+
+- reduzir ruído visual
+- ganhar clareza e hierarquia
+- deixar a app menos parecida com um dashboard genérico
+
+Detalhe aprovado:
+
+- o minimalismo deve ser aplicado a toda a app, não só aos ecrãs principais
+- o estilo escolhido foi:
+  - `editorial`
+  - e não `utilitário`
+
+### 2. Ordem dos próximos sprints de frontend
+
+Decisão:
+
+- primeiro simplificar mapa, detalhe da bomba, sinalização e navegação
+- depois fazer a transição visual completa para o sistema monocromático editorial
+
+Motivo:
+
+- a lógica principal já está estável
+- o maior ganho de valor agora vem da redução de complexidade visual e cognitiva
+
+### 3. Task da landing com "Não mostrar novamente" foi despriorizada
+
+Decisão:
+
+- a task existe, mas deixou de ser prioridade imediata
+
+Motivo:
+
+- já consumiu tempo acima do valor entregue
+- os temas críticos de lançamento são:
+  - clareza visual
+  - simplificação do fluxo
+  - robustez funcional
+
 ## Ponto de retoma recomendado
 
 Próximo passo funcional:
 
-- ajustar a experiência da landing opcional após validação em produção
+- começar a sprint visual de simplificação radical da app
 
-Comportamento pretendido:
+Parâmetros aprovados para essa sprint:
 
-- o utilizador pode optar por não voltar a ver a landing nas visitas seguintes
-- quando isso acontecer, a app deve abrir directamente em `/map`
-- a landing continua acessível manualmente
+- aplicar a toda a app
+- estilo:
+  - `editorial`
+- paleta:
+  - preto
+  - branco
+  - cinzas
+- estados:
+  - cor semântica mínima
 
-## Funcionalidade adicional preparada
+Primeiros alvos:
 
-### Landing opcional
-
-Decisão:
-
-- a landing ganhou opção `Não mostrar novamente`
-- a preferência é guardada server-side em cookie:
-  - `cm_skip_landing`
-
-Comportamento:
-
-- futuras visitas a `/` redireccionam para `/map`
-- a landing continua acessível manualmente em:
-  - `/?landing=1`
+- landing
+- mapa
+- detalhe da bomba
+- sinalização
+- depois:
+  - dashboard
+  - alertas
+  - perfil
+  - admin
 
 ## Estado funcional validado em browser
 

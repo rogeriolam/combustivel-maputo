@@ -55,11 +55,6 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
                 Entrar para contribuir
               </Link>
             </div>
-            <form action="/api/preferences/skip-landing" className="hero-skip-form" method="post">
-              <button className="ghost-button" type="submit">
-                Não mostrar novamente
-              </button>
-            </form>
             <div className="hero-pill-row">
               <span className="hero-pill">
                 <MapPinned size={16} />
@@ -77,15 +72,10 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
           </div>
 
           <Card className="hero-panel">
-            <div className="hero-panel-map">
-              <div className="map-swatch map-swatch-available">Tem</div>
-              <div className="map-swatch map-swatch-conflict">Em conflito</div>
-              <div className="map-swatch map-swatch-unavailable">Não tem</div>
-            </div>
             <div className="stack">
               <div className="section-heading">
                 <h2>Como funciona</h2>
-            <p>Leitura pública, contribuição opcional com conta.</p>
+                <p>Leitura pública, contribuição opcional com conta.</p>
               </div>
               <div className="landing-list">
                 <div>
@@ -108,7 +98,7 @@ export default async function LandingPage({ searchParams }: LandingPageProps) {
 
       <section className="landing-section">
         <div className="landing-section-header">
-          <h2>Porque esta app importa</h2>
+          <h2>Porque isto importa</h2>
           <p>
             Em períodos de escassez, a informação certa no momento certo poupa tempo, deslocações e filas
             desnecessárias.
