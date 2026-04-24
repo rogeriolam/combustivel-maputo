@@ -128,8 +128,7 @@ select {
   padding: 18px 16px 40px;
 }
 
-.hero-shell,
-.landing-section {
+.hero-shell {
   max-width: 1100px;
   margin: 0 auto;
 }
@@ -210,6 +209,9 @@ select {
 
 .hero-panel {
   background: var(--surface);
+  display: grid;
+  gap: 12px;
+  align-content: start;
 }
 
 .hero-pill {
@@ -222,52 +224,8 @@ select {
   border: 1px solid var(--line);
 }
 
-.landing-section {
-  margin-top: 22px;
-}
-
-.landing-section-header {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.landing-card-grid {
-  display: grid;
-  gap: 14px;
-}
-
-.landing-card-grid .card,
-.community-card {
-  display: grid;
-  gap: 12px;
-}
-
-.landing-list {
-  display: grid;
-  gap: 12px;
-}
-
-.landing-list p,
-.landing-card-grid p,
-.community-card p {
-  color: var(--ink-soft);
-  line-height: 1.6;
+.compact-copy {
   margin-bottom: 0;
-}
-
-.icon-badge {
-  width: 42px;
-  height: 42px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: var(--surface-strong);
-  color: var(--ink);
-}
-
-.community-card {
-  background: var(--surface);
 }
 
 .page {
