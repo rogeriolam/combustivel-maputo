@@ -60,8 +60,8 @@ export default async function MapPage({
         </form>
         <FilterBar filters={filters} />
         <MapView stations={stations} filters={filters} />
-        <MapLegend />
         <StationList stations={stations} isAuthenticated={Boolean(profile)} />
+        <MapLegend />
       </div>
     </AppShell>
   );

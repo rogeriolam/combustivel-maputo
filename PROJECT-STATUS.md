@@ -1105,3 +1105,57 @@ Próximo passo recomendado:
 3. Se isso estiver bem:
    - continuar a sprint de UX/UI
    - próximo tema estrutural: preparar o mapa para escalar melhor quando houver muitas bombas
+
+## Actualização de 2026-04-24
+
+### O que ficou concluído hoje
+
+- Direcção visual consolidada para a app inteira:
+  - minimalismo `editorial`
+  - base em `preto`, `branco` e `cinzas`
+  - cor semântica mínima apenas nos estados do combustível
+- Foi escrita uma spec de design para orientar esta fase:
+  - `docs/superpowers/specs/2026-04-24-editorial-minimal-ui-design.md`
+- Primeira passada do re-skin global concluída:
+  - tokens de cor e superfície revistos em `app/globals.css`
+  - gradientes removidos
+  - sombras pesadas removidas
+  - botões principais em preto
+  - botões secundários em branco com contorno
+  - cards, navegação, filtros e ecrãs secundários herdaram o novo sistema
+- Landing page simplificada com sucesso:
+  - reduzida a um único hero
+  - removidas secções inferiores redundantes
+  - mantidos apenas:
+    - título
+    - texto curto
+    - `Ver mapa`
+    - `Entrar`
+    - prova social mínima
+    - nota curta sobre contribuição comunitária
+- O build local foi validado após cada mudança visual relevante com:
+  - `npm run build`
+
+### Estado exacto no fim de hoje
+
+- A app já tem uma linguagem visual muito mais coerente e menos ruidosa
+- A landing melhorou, mas o próximo ponto de fricção já está identificado:
+  - a listagem das bombas no mapa vai gerar demasiado ruído quando houver centenas de registos
+- A lógica crítica do produto continua estável:
+  - sinalização anónima por pessoa distinta
+  - agregação correcta
+  - hora local correcta
+  - detalhe da bomba coerente com o histórico
+
+### Decisão importante tomada hoje
+
+- O próximo tema não será mais lógica de negócio
+- O próximo foco passa a ser:
+  - simplificar a visão da listagem das bombas
+  - preparar o mapa para maior densidade sem perder clareza
+
+### Ponto de retoma recomendado
+
+1. Rever a listagem das bombas no mapa
+2. Torná-la mais compacta, mais limpa e mais preparada para escala
+3. Só depois pensar em clustering, viewport-driven lists ou outras optimizações estruturais
