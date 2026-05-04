@@ -1,12 +1,12 @@
-# Graph Report - /Users/rogerio.lam/Documents/New project/combustivel-maputo  (2026-04-19)
+# Graph Report - /Users/rogerio.lam/Projects/combustivel-maputo  (2026-04-28)
 
 ## Corpus Check
-- 43 files · ~12,901 words
+- 47 files · ~24,837 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 102 nodes · 104 edges · 32 communities detected
-- Extraction: 77% EXTRACTED · 23% INFERRED · 0% AMBIGUOUS · INFERRED: 24 edges (avg confidence: 0.8)
+- 115 nodes · 118 edges · 34 communities detected
+- Extraction: 77% EXTRACTED · 23% INFERRED · 0% AMBIGUOUS · INFERRED: 27 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
@@ -42,30 +42,32 @@
 - [[_COMMUNITY_Community 29|Community 29]]
 - [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `getStations()` - 9 edges
 2. `createSupabaseServerClient()` - 9 edges
 3. `getCurrentUserProfile()` - 8 edges
-4. `buildProfilePayload()` - 6 edges
-5. `calculateFuelAggregate()` - 6 edges
-6. `POST()` - 5 edges
+4. `POST()` - 6 edges
+5. `buildProfilePayload()` - 6 edges
+6. `calculateFuelAggregate()` - 6 edges
 7. `hasSupabaseEnv()` - 5 edges
-8. `getOrCreateProfile()` - 4 edges
-9. `getSignalsForStation()` - 4 edges
-10. `getAlerts()` - 4 edges
+8. `LandingPage()` - 4 edges
+9. `GET()` - 4 edges
+10. `getOrCreateProfile()` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `getStations()` --calls--> `filterStations()`  [INFERRED]
-  /Users/rogerio.lam/Documents/New project/combustivel-maputo/lib/supabase/repository.ts → /Users/rogerio.lam/Documents/New project/combustivel-maputo/lib/domain/logic.ts
+  /Users/rogerio.lam/Projects/combustivel-maputo/lib/supabase/repository.ts → /Users/rogerio.lam/Projects/combustivel-maputo/lib/domain/logic.ts
+- `LandingPage()` --calls--> `GET()`  [INFERRED]
+  /Users/rogerio.lam/Projects/combustivel-maputo/app/page.tsx → /Users/rogerio.lam/Documents/New project/combustivel-maputo/app/auth/callback/route.ts
 - `GET()` --calls--> `createSupabaseServerClient()`  [INFERRED]
   /Users/rogerio.lam/Documents/New project/combustivel-maputo/app/auth/callback/route.ts → /Users/rogerio.lam/Documents/New project/combustivel-maputo/lib/supabase/server.ts
 - `getOrCreateProfile()` --calls--> `createSupabaseServerClient()`  [INFERRED]
   /Users/rogerio.lam/Documents/New project/combustivel-maputo/app/api/stations/route.ts → /Users/rogerio.lam/Documents/New project/combustivel-maputo/lib/supabase/server.ts
 - `getOrCreateProfile()` --calls--> `buildProfilePayload()`  [INFERRED]
   /Users/rogerio.lam/Documents/New project/combustivel-maputo/app/api/stations/route.ts → /Users/rogerio.lam/Documents/New project/combustivel-maputo/lib/supabase/profile.ts
-- `getReporterContext()` --calls--> `createSupabaseServerClient()`  [INFERRED]
-  /Users/rogerio.lam/Documents/New project/combustivel-maputo/app/api/signals/route.ts → /Users/rogerio.lam/Documents/New project/combustivel-maputo/lib/supabase/server.ts
 
 ## Communities
 
@@ -74,16 +76,16 @@ Cohesion: 0.21
 Nodes (13): AppShell(), LandingPage(), MapPage(), getAdminMetrics(), getAlerts(), getCurrentUserProfile(), getDashboardSummary(), getSignalsForStation() (+5 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.15
+Cohesion: 0.14
 Nodes (9): buildDashboardSummary(), calculateFuelAggregate(), filterStations(), fuelLegend(), getConfidenceLevel(), getLatestSignalsPerUser(), getRecentSignals(), getStatusExplanation() (+1 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.38
-Nodes (5): calculateReputation(), buildProfilePayload(), isAdminEmail(), parseAdminEmails(), GET()
+Nodes (3): getOrCreateProfile(), getReporterContext(), POST()
 
 ### Community 3 - "Community 3"
-Cohesion: 0.47
-Nodes (3): getOrCreateProfile(), getReporterContext(), POST()
+Cohesion: 0.38
+Nodes (5): calculateReputation(), buildProfilePayload(), isAdminEmail(), parseAdminEmails(), GET()
 
 ### Community 4 - "Community 4"
 Cohesion: 0.33
@@ -95,22 +97,22 @@ Nodes (3): createSupabaseAdminClient(), DELETE(), ensureAdmin()
 
 ### Community 6 - "Community 6"
 Cohesion: 0.5
-Nodes (0): 
+Nodes (3): formatMaputoDateTime(), formatMaputoRelative(), FuelStatusCard()
 
 ### Community 7 - "Community 7"
 Cohesion: 0.67
-Nodes (0): 
+Nodes (2): ensureGuestReporterKey(), getCookieValue()
 
 ### Community 8 - "Community 8"
-Cohesion: 1.0
+Cohesion: 0.5
 Nodes (0): 
 
 ### Community 9 - "Community 9"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 10 - "Community 10"
-Cohesion: 1.0
+Cohesion: 0.67
 Nodes (0): 
 
 ### Community 11 - "Community 11"
@@ -197,40 +199,42 @@ Nodes (0):
 Cohesion: 1.0
 Nodes (0): 
 
+### Community 32 - "Community 32"
+Cohesion: 1.0
+Nodes (0): 
+
+### Community 33 - "Community 33"
+Cohesion: 1.0
+Nodes (0): 
+
 ## Knowledge Gaps
-- **Thin community `Community 8`** (2 nodes): `middleware()`, `middleware.ts`
+- **Thin community `Community 11`** (2 nodes): `middleware()`, `middleware.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 9`** (2 nodes): `RootLayout()`, `layout.tsx`
+- **Thin community `Community 12`** (2 nodes): `RootLayout()`, `layout.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 10`** (2 nodes): `AuthPage()`, `page.tsx`
+- **Thin community `Community 13`** (2 nodes): `formatMaputoDateTime()`, `page.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 11`** (2 nodes): `FuelStatusCard()`, `fuel-status-card.tsx`
+- **Thin community `Community 14`** (2 nodes): `AuthPage()`, `page.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 12`** (2 nodes): `linkFor()`, `filter-bar.tsx`
+- **Thin community `Community 15`** (2 nodes): `linkFor()`, `filter-bar.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 13`** (2 nodes): `submitReport()`, `report-form.tsx`
+- **Thin community `Community 16`** (2 nodes): `NewStationForm()`, `new-station-form.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 14`** (2 nodes): `NewStationForm()`, `new-station-form.tsx`
+- **Thin community `Community 17`** (2 nodes): `Card()`, `card.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 15`** (2 nodes): `Card()`, `card.tsx`
+- **Thin community `Community 18`** (2 nodes): `Toast()`, `toast.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 16`** (2 nodes): `AuthRequiredCard()`, `auth-required-card.tsx`
+- **Thin community `Community 19`** (2 nodes): `AuthRequiredCard()`, `auth-required-card.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 17`** (2 nodes): `backHref()`, `page-header.tsx`
+- **Thin community `Community 20`** (2 nodes): `backHref()`, `page-header.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 18`** (2 nodes): `DeleteStationButton()`, `delete-station-button.tsx`
+- **Thin community `Community 21`** (2 nodes): `DeleteStationButton()`, `delete-station-button.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 19`** (2 nodes): `MapView()`, `map-view.tsx`
+- **Thin community `Community 22`** (2 nodes): `MapView()`, `map-view.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 20`** (1 nodes): `next-env.d.ts`
+- **Thin community `Community 23`** (1 nodes): `next-env.d.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 21`** (1 nodes): `next.config.ts`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 22`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 23`** (1 nodes): `page.tsx`
-  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 24`** (1 nodes): `page.tsx`
+- **Thin community `Community 24`** (1 nodes): `next.config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 25`** (1 nodes): `page.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
@@ -238,24 +242,28 @@ Nodes (0):
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 - **Thin community `Community 27`** (1 nodes): `page.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 28`** (1 nodes): `station-list.tsx`
+- **Thin community `Community 28`** (1 nodes): `page.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 29`** (1 nodes): `data.ts`
+- **Thin community `Community 29`** (1 nodes): `page.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 30`** (1 nodes): `types.ts`
+- **Thin community `Community 30`** (1 nodes): `station-list.tsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Community 31`** (1 nodes): `config.ts`
+- **Thin community `Community 31`** (1 nodes): `data.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 32`** (1 nodes): `types.ts`
+  Too small to be a meaningful cluster - may be noise or needs more connections extracted.
+- **Thin community `Community 33`** (1 nodes): `config.ts`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `createSupabaseServerClient()` connect `Community 0` to `Community 2`, `Community 3`, `Community 5`?**
-  _High betweenness centrality (0.090) - this node is a cross-community bridge._
+  _High betweenness centrality (0.074) - this node is a cross-community bridge._
 - **Why does `getStations()` connect `Community 0` to `Community 1`?**
-  _High betweenness centrality (0.069) - this node is a cross-community bridge._
-- **Why does `buildProfilePayload()` connect `Community 2` to `Community 0`, `Community 3`?**
-  _High betweenness centrality (0.065) - this node is a cross-community bridge._
+  _High betweenness centrality (0.057) - this node is a cross-community bridge._
+- **Why does `buildProfilePayload()` connect `Community 3` to `Community 0`, `Community 2`?**
+  _High betweenness centrality (0.056) - this node is a cross-community bridge._
 - **Are the 4 inferred relationships involving `getStations()` (e.g. with `LandingPage()` and `MapPage()`) actually correct?**
   _`getStations()` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 8 inferred relationships involving `createSupabaseServerClient()` (e.g. with `GET()` and `getOrCreateProfile()`) actually correct?**

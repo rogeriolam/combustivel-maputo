@@ -29,22 +29,13 @@ export default async function MapPage({
       <div className="page">
         <PageHeader
           title="Mapa em tempo quase real"
-          subtitle="Consulta rapidamente onde há combustível e abre o detalhe de cada bomba para ver estado, última actualização e histórico recente."
+          subtitle="Consulta rapidamente o estado das bombas e abre o detalhe para sinalizar no local."
         />
-        <section className="map-strip">
-          <div className="map-strip-copy">
-            <span className="overview-kicker">Leitura pública</span>
-            <p>Usa os filtros e toca numa bomba para ver estado, histórico e última actualização.</p>
-          </div>
-          <div className="map-strip-stats">
-            <span className="overview-pill compact-pill">
-              <strong>{stations.length}</strong>
-              <span>bombas</span>
-            </span>
-            <span className="overview-pill compact-pill">
-              <strong>{filters.province === "all" ? "País" : filters.province}</strong>
-              <span>zona</span>
-            </span>
+        <section className="map-toolbar">
+          <span className="overview-kicker">Leitura pública</span>
+          <div className="map-toolbar-meta">
+            <strong>{stations.length} bombas</strong>
+            <span>{filters.province === "all" ? "Todo o país" : filters.province}</span>
           </div>
         </section>
         <form className="search-bar">

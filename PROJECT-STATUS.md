@@ -1159,3 +1159,40 @@ Próximo passo recomendado:
 1. Rever a listagem das bombas no mapa
 2. Torná-la mais compacta, mais limpa e mais preparada para escala
 3. Só depois pensar em clustering, viewport-driven lists ou outras optimizações estruturais
+
+## Actualização de 2026-05-04
+
+### O que ficou concluído hoje
+
+- O topo do mapa foi simplificado para reduzir ruído no primeiro viewport:
+  - o bloco introdutório passou para uma barra compacta com:
+    - contexto de leitura pública
+    - número de bombas na vista
+    - província/zona activa
+- A barra de filtros foi reorganizada num painel recolhível:
+  - resumo compacto `Filtros`
+  - indicador `Activos` ou `Todos`
+  - grupos separados por:
+    - província
+    - combustível
+    - estado
+- Os rótulos dos filtros foram encurtados para reduzir densidade visual:
+  - `Todos` em vez de frases mais longas quando adequado
+- O build local foi validado com sucesso após estas alterações:
+  - `npm run build`
+
+### Nova necessidade registada no backlog
+
+- Adicionar sinalização de fila por bomba
+- Requisito funcional pretendido:
+  - utilizadores devem poder indicar:
+    - se a bomba tem fila ou não
+    - se a fila é longa ou não
+- Esta mudança ainda não foi desenhada nem implementada
+- Deve ser tratada numa fase posterior como extensão do modelo de observação da bomba
+
+### Ponto de retoma recomendado
+
+1. Rever visualmente `/map` após esta simplificação do topo e filtros
+2. Decidir se a legenda deve ficar colapsável por defeito
+3. Desenhar a futura extensão de `fila` e `fila longa` sem poluir o fluxo actual de sinalização
