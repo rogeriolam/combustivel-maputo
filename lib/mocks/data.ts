@@ -1,4 +1,4 @@
-import { calculateFuelAggregate } from "@/lib/domain/logic";
+import { calculateFuelAggregate, calculateQueueAggregate } from "@/lib/domain/logic";
 import { AlertPreference, Profile, Signal, Station } from "@/lib/domain/types";
 
 export const mockProfiles: Profile[] = [
@@ -43,6 +43,7 @@ export const mockSignals: Signal[] = [
     userEmail: "celina@example.com",
     fuelType: "gasoline",
     option: "available",
+    queueStatus: "short",
     createdAt: "2026-04-15T12:20:00.000Z",
     userLatitude: -25.9533,
     userLongitude: 32.5925,
@@ -58,6 +59,7 @@ export const mockSignals: Signal[] = [
     userEmail: "paulo@example.com",
     fuelType: "gasoline",
     option: "available",
+    queueStatus: "long",
     createdAt: "2026-04-15T13:05:00.000Z",
     userLatitude: -25.9534,
     userLongitude: 32.5924,
@@ -207,7 +209,8 @@ export const mockStations: Station[] = baseStations.map((station) => {
   return {
     ...station,
     gasoline: calculateFuelAggregate("gasoline", signals),
-    diesel: calculateFuelAggregate("diesel", signals)
+    diesel: calculateFuelAggregate("diesel", signals),
+    queue: calculateQueueAggregate(signals)
   };
 });
 

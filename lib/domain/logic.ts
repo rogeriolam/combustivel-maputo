@@ -5,6 +5,7 @@ import {
   STATUS_MAJORITY_THRESHOLD,
   confidenceLabels,
   fuelLabels,
+  queueLabels,
   statusLabels
 } from "@/lib/domain/config";
 import {
@@ -14,6 +15,9 @@ import {
   FuelStatus,
   FuelType,
   Profile,
+  QueueAggregate,
+  QueueOption,
+  QueueStatus,
   Signal,
   SignalOption,
   Station,
@@ -39,6 +43,72 @@ export function getLatestSignalsPerUser(signals: Signal[]): Signal[] {
   }
 
   return [...map.values()];
+}
+
+export function getLatestQueueSignalsPerUser(signals: Signal[]): Signal[] {
+  const map = new Map<string, Signal>();
+
+  for (const signal of [...signals]
+    .filter((entry) => Boolean(entry.queueStatus))
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())) {
+    const reporterIdentity = signal.userId ?? signal.reporterKey ?? `guest:${signal.id}`;
+    const key = `${signal.stationId}:${reporterIdentity}`;
+    if (!map.has(key)) {
+      map.set(key, signal);
+    }
+  }
+
+  return [...map.values()];
+}
+
+export function getQueueExplanation(status: QueueStatus): string {
+  switch (status) {
+    case "none":
+      return "As observações recentes indicam que não há fila.";
+    case "short":
+      return "As observações recentes indicam uma fila curta.";
+    case "long":
+      return "As observações recentes indicam uma fila longa.";
+    case "conflict":
+      return "Há observações recentes contraditórias sobre a fila.";
+    case "unknown":
+    default:
+      return "Ainda não há informação pública suficiente sobre a fila.";
+  }
+}
+
+export function calculateQueueAggregate(signals: Signal[], now = new Date()): QueueAggregate {
+  const latestSignals = getLatestQueueSignalsPerUser(getRecentSignals(signals, now));
+  const noneCount = latestSignals.filter((signal) => signal.queueStatus === "none").length;
+  const shortCount = latestSignals.filter((signal) => signal.queueStatus === "short").length;
+  const longCount = latestSignals.filter((signal) => signal.queueStatus === "long").length;
+  const counts: Array<[QueueOption, number]> = [
+    ["none", noneCount],
+    ["short", shortCount],
+    ["long", longCount]
+  ];
+  const total = latestSignals.length;
+  const [leadingStatus, leadingCount] = counts.sort((a, b) => b[1] - a[1])[0];
+
+  let status: QueueStatus = "unknown";
+
+  if (total < MIN_SIGNALS_FOR_STATUS) {
+    status = "unknown";
+  } else if (leadingCount / total >= STATUS_MAJORITY_THRESHOLD) {
+    status = leadingStatus;
+  } else {
+    status = "conflict";
+  }
+
+  return {
+    status,
+    noneCount,
+    shortCount,
+    longCount,
+    recentSignals: total,
+    lastUpdatedAt: latestSignals.length ? latestSignals[0].createdAt : null,
+    explanation: getQueueExplanation(status)
+  };
 }
 
 export function scoreSignal(signal: Signal): number {
@@ -249,6 +319,10 @@ export function fuelLegend() {
       body: "Existem menos de 2 sinalizações válidas nas últimas 3 horas."
     }
   ];
+}
+
+export function formatQueueMeta(aggregate: QueueAggregate): string {
+  return `Fila: ${queueLabels[aggregate.status]}`;
 }
 
 export function formatStatusMeta(aggregate: FuelAggregate): string {

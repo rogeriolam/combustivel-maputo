@@ -6,6 +6,7 @@ type CreateSignalBody = {
   stationId?: string;
   fuelType?: "gasoline" | "diesel";
   option?: "available" | "unavailable";
+  queueStatus?: "none" | "short" | "long" | null;
   updates?: Array<{
     fuelType: "gasoline" | "diesel";
     option: "available" | "unavailable";
@@ -49,6 +50,7 @@ export async function POST(request: Request) {
   const guestReporterKey = body.guestReporterKey?.trim();
   const userLatitude = Number(body.userLatitude);
   const userLongitude = Number(body.userLongitude);
+  const queueStatus = body.queueStatus ?? null;
   const updates =
     body.updates?.length
       ? body.updates
@@ -60,6 +62,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "Faltam dados da sinalização." }, { status: 400 });
   }
 
+  if (queueStatus && !["none", "short", "long"].includes(queueStatus)) {
+    return NextResponse.json({ ok: false, error: "Informação de fila inválida." }, { status: 400 });
+  }
+
   if (Number.isNaN(userLatitude) || Number.isNaN(userLongitude)) {
     return NextResponse.json({ ok: false, error: "Localização inválida." }, { status: 400 });
   }
@@ -69,6 +75,7 @@ export async function POST(request: Request) {
     user_id: profile?.id ?? null,
     fuel_type: update.fuelType,
     status_option: update.option,
+    queue_status: queueStatus,
     user_latitude: userLatitude,
     user_longitude: userLongitude,
     meta: {

@@ -4,7 +4,7 @@ import L from "leaflet";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, Marker, Popup, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
-import { MAPUTO_CENTER, provinceMapView, statusColors, statusLabels } from "@/lib/domain/config";
+import { MAPUTO_CENTER, provinceMapView, queueLabels, statusColors, statusLabels } from "@/lib/domain/config";
 import { Province, Station } from "@/lib/domain/types";
 import { formatMaputoDateTime } from "@/lib/formatting/date";
 
@@ -140,6 +140,7 @@ export default function LeafletMapCanvas({
                 <span>
                   Gasolina: {statusLabels[station.gasoline.status]} · Diesel: {statusLabels[station.diesel.status]}
                 </span>
+                <span>Fila: {queueLabels[station.queue.status]}</span>
                 <span title="Última actualização recente considerada para o estado">
                   Última actualização:{" "}
                   {station.gasoline.lastUpdatedAt || station.diesel.lastUpdatedAt

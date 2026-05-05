@@ -1,6 +1,8 @@
 export type FuelType = "gasoline" | "diesel";
 export type SignalOption = "available" | "unavailable";
 export type FuelStatus = "available" | "unavailable" | "conflict" | "unknown";
+export type QueueOption = "none" | "short" | "long";
+export type QueueStatus = QueueOption | "conflict" | "unknown";
 export type ConfidenceLevel = "low" | "medium" | "high";
 export type UserRole = "active" | "blocked" | "admin";
 export type Province =
@@ -36,6 +38,7 @@ export interface Signal {
   userEmail?: string;
   fuelType: FuelType;
   option: SignalOption;
+  queueStatus?: QueueOption;
   createdAt: string;
   userLatitude: number;
   userLongitude: number;
@@ -57,6 +60,16 @@ export interface FuelAggregate {
   weightedUnavailable: number;
 }
 
+export interface QueueAggregate {
+  status: QueueStatus;
+  noneCount: number;
+  shortCount: number;
+  longCount: number;
+  recentSignals: number;
+  lastUpdatedAt: string | null;
+  explanation: string;
+}
+
 export interface Station {
   id: string;
   name: string;
@@ -72,6 +85,7 @@ export interface Station {
   adminNotes?: string;
   gasoline: FuelAggregate;
   diesel: FuelAggregate;
+  queue: QueueAggregate;
 }
 
 export interface AlertPreference {

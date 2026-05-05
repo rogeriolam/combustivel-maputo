@@ -4,9 +4,12 @@ import { AppShell } from "@/components/layout/app-shell";
 import { PageHeader } from "@/components/layout/page-header";
 import { Card } from "@/components/ui/card";
 import { PageToast } from "@/components/ui/page-toast";
+import { EditStationForm } from "@/components/stations/edit-station-form";
 import { FuelStatusCard } from "@/components/stations/fuel-status-card";
+import { QueueStatusCard } from "@/components/stations/queue-status-card";
 import { ReportForm } from "@/components/stations/report-form";
 import { getCurrentUserProfile, getSignalsForStation, getStationById } from "@/lib/supabase/repository";
+import { queueLabels } from "@/lib/domain/config";
 import { formatMaputoDateTime } from "@/lib/formatting/date";
 
 export default async function StationDetailPage({
@@ -61,6 +64,7 @@ export default async function StationDetailPage({
                         ? "Em conflito"
                         : "A aguardar mais sinais"}
                 </p>
+                <p className="microcopy">Fila: {queueLabels[station.queue.status]}</p>
               </div>
             </div>
           </Card>
@@ -71,8 +75,18 @@ export default async function StationDetailPage({
             </div>
             <ReportForm station={station} isAuthenticated={isAuthenticated} />
           </Card>
+          {isAuthenticated ? (
+            <Card>
+              <div className="section-heading compact-heading">
+                <h2>Editar dados da bomba</h2>
+                <p>Corrige nome, localização textual ou coordenadas. A remoção continua reservada ao Admin.</p>
+              </div>
+              <EditStationForm station={station} />
+            </Card>
+          ) : null}
           <FuelStatusCard aggregate={station.gasoline} />
           <FuelStatusCard aggregate={station.diesel} />
+          <QueueStatusCard aggregate={station.queue} />
           <Card className="history-card">
             <div className="section-heading compact-heading">
               <h2>Histórico recente</h2>
@@ -87,8 +101,8 @@ export default async function StationDetailPage({
                       {signal.option === "available" ? "Tem" : "Não tem"}
                     </strong>
                     <span>
-                      {signal.userName ?? signal.userEmail ?? "Utilizador"} · {formatMaputoDateTime(signal.createdAt)} ·{" "}
-                      {Math.round(signal.distanceMeters)}m
+                      {signal.userName ?? signal.userEmail ?? "Utilizador"} · {formatMaputoDateTime(signal.createdAt)} · {Math.round(signal.distanceMeters)}m
+                      {signal.queueStatus ? ` · Fila: ${queueLabels[signal.queueStatus]}` : ""}
                     </span>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import { buildDashboardSummary, calculateFuelAggregate, filterStations } from "@/lib/domain/logic";
+import { buildDashboardSummary, calculateFuelAggregate, calculateQueueAggregate, filterStations } from "@/lib/domain/logic";
 import { mockAlerts, mockProfiles, mockSignals, mockStations } from "@/lib/mocks/data";
 import { buildProfilePayload } from "@/lib/supabase/profile";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
@@ -64,6 +64,15 @@ export async function getStations(filters: StationFilters = {}): Promise<Station
         explanation: station.diesel_explanation,
         weightedAvailable: station.diesel_weighted_available,
         weightedUnavailable: station.diesel_weighted_unavailable
+      },
+      queue: {
+        status: station.queue_status ?? "unknown",
+        noneCount: station.queue_none_count ?? 0,
+        shortCount: station.queue_short_count ?? 0,
+        longCount: station.queue_long_count ?? 0,
+        recentSignals: station.queue_recent_signals ?? 0,
+        lastUpdatedAt: station.queue_last_updated_at ?? null,
+        explanation: station.queue_explanation ?? "Ainda não há informação pública suficiente sobre a fila."
       }
     })),
     filters
@@ -104,6 +113,7 @@ export async function getSignalsForStation(stationId: string): Promise<Signal[]>
     userEmail: signal.meta?.reporter_email ?? undefined,
     fuelType: signal.fuel_type,
     option: signal.status_option,
+    queueStatus: signal.queue_status ?? undefined,
     createdAt: signal.created_at,
     userLatitude: signal.user_latitude,
     userLongitude: signal.user_longitude,
@@ -229,6 +239,7 @@ export async function rebuildStationFromSignals(stationId: string): Promise<Stat
   return {
     ...station,
     gasoline: calculateFuelAggregate("gasoline", signals),
-    diesel: calculateFuelAggregate("diesel", signals)
+    diesel: calculateFuelAggregate("diesel", signals),
+    queue: calculateQueueAggregate(signals)
   };
 }

@@ -824,7 +824,8 @@ select {
   font-weight: 600;
 }
 
-.report-card {
+.report-card,
+.queue-report-card {
   display: grid;
   gap: 14px;
   padding: 18px;
@@ -833,10 +834,18 @@ select {
   background: var(--surface);
 }
 
-.report-actions {
+.report-actions,
+.queue-actions {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.report-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.queue-actions {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .report-choice {
@@ -863,6 +872,36 @@ select {
 .report-save-button {
   min-height: 58px;
   font-size: 1.05rem;
+}
+
+.queue-status-card {
+  display: grid;
+  gap: 18px;
+}
+
+.queue-badge-none {
+  color: var(--status-available);
+  border-color: color-mix(in srgb, var(--status-available) 45%, transparent);
+  background: color-mix(in srgb, var(--status-available) 12%, transparent);
+}
+
+.queue-badge-short {
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--surface-strong);
+}
+
+.queue-badge-long,
+.queue-badge-conflict {
+  color: var(--status-conflict);
+  border-color: color-mix(in srgb, var(--status-conflict) 45%, transparent);
+  background: color-mix(in srgb, var(--status-conflict) 12%, transparent);
+}
+
+.queue-badge-unknown {
+  color: var(--status-unknown);
+  border-color: color-mix(in srgb, var(--status-unknown) 45%, transparent);
+  background: color-mix(in srgb, var(--status-unknown) 12%, transparent);
 }
 
 .report-save-button:disabled,
@@ -993,6 +1032,10 @@ select {
 }
 
 @media (max-width: 640px) {
+  .queue-actions {
+    grid-template-columns: 1fr;
+  }
+
   .map-overview-card,
   .station-summary-card,
   .station-summary-grid {

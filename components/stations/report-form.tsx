@@ -6,7 +6,7 @@ import { LocateFixed } from "lucide-react";
 import { Toast, ToastType } from "@/components/ui/toast";
 import { GPS_RADIUS_METERS, fuelLabels } from "@/lib/domain/config";
 import { distanceMeters } from "@/lib/domain/logic";
-import { FuelType, SignalOption, Station } from "@/lib/domain/types";
+import { FuelType, QueueOption, SignalOption, Station } from "@/lib/domain/types";
 
 const GUEST_REPORTER_COOKIE = "cm_guest_reporter_key";
 
@@ -44,6 +44,7 @@ export function ReportForm({
     gasoline: null,
     diesel: null
   });
+  const [queueStatus, setQueueStatus] = useState<QueueOption | null>(null);
   const [gpsState, setGpsState] = useState<"checking" | "inside" | "outside" | "unsupported" | "error">("checking");
   const [currentCoords, setCurrentCoords] = useState<{ latitude: number; longitude: number } | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -114,6 +115,7 @@ export function ReportForm({
         body: JSON.stringify({
           stationId: station.id,
           updates: selectedUpdates,
+          queueStatus,
           guestReporterKey,
           userLatitude: currentCoords.latitude,
           userLongitude: currentCoords.longitude
@@ -131,6 +133,7 @@ export function ReportForm({
       setFeedback("Sinalização guardada. O histórico e o estado da bomba foram actualizados.");
       setToast({ message: "✓ Sinalização registada! Obrigado.", type: "success" });
       setSelection({ gasoline: null, diesel: null });
+      setQueueStatus(null);
       router.refresh();
     });
   }
@@ -201,6 +204,57 @@ export function ReportForm({
           </div>
         ))}
       </div>
+      <div className="queue-report-card">
+        <div className="report-card-head">
+          <div>
+            <span className="label">Fila</span>
+            <h3>Fila agora?</h3>
+          </div>
+          <span className="microcopy">
+            {queueStatus
+              ? queueStatus === "none"
+                ? "Sem fila"
+                : queueStatus === "short"
+                  ? "Fila curta"
+                  : "Fila longa"
+              : "Opcional"}
+          </span>
+        </div>
+        <div className="queue-actions">
+          <button
+            className={`secondary-button ${queueStatus === null ? "report-choice is-selected" : "report-choice"}`}
+            type="button"
+            disabled={isPending}
+            onClick={() => setQueueStatus(null)}
+          >
+            Não sei
+          </button>
+          <button
+            className={`secondary-button ${queueStatus === "none" ? "report-choice is-selected" : "report-choice"}`}
+            type="button"
+            disabled={isPending}
+            onClick={() => setQueueStatus("none")}
+          >
+            Sem fila
+          </button>
+          <button
+            className={`secondary-button ${queueStatus === "short" ? "report-choice is-selected" : "report-choice"}`}
+            type="button"
+            disabled={isPending}
+            onClick={() => setQueueStatus("short")}
+          >
+            Fila curta
+          </button>
+          <button
+            className={`secondary-button ${queueStatus === "long" ? "report-choice is-selected" : "report-choice"}`}
+            type="button"
+            disabled={isPending}
+            onClick={() => setQueueStatus("long")}
+          >
+            Fila longa
+          </button>
+        </div>
+      </div>
       {selectedUpdates.length ? (
         <div className="report-review-card">
           <span className="label">Por guardar</span>
@@ -208,6 +262,9 @@ export function ReportForm({
             {selectedUpdates
               .map(({ fuelType, option }) => `${fuelLabels[fuelType]} = ${option === "available" ? "Tem" : "Não tem"}`)
               .join(" · ")}
+            {queueStatus
+              ? ` · Fila = ${queueStatus === "none" ? "Sem fila" : queueStatus === "short" ? "Fila curta" : "Fila longa"}`
+              : ""}
           </strong>
           {!isCompleteSelection ? (
             <span className="microcopy">Falta escolher um dos combustíveis antes de guardar.</span>

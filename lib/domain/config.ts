@@ -21,6 +21,14 @@ export const statusLabels = {
   unknown: "Sem informação recente"
 } as const;
 
+export const queueLabels = {
+  none: "Sem fila",
+  short: "Fila curta",
+  long: "Fila longa",
+  conflict: "Informação contraditória",
+  unknown: "Ainda sem informação do público"
+} as const;
+
 export const confidenceLabels = {
   low: "Baixo",
   medium: "Médio",
